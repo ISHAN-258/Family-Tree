@@ -3,416 +3,331 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tripathi Family Tree</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Tripathi Parivar Vruksh</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0f0f13;
-  --surface:#1a1a24;
-  --surface2:#22222f;
-  --border:#2e2e40;
-  --accent:#e8b86d;
-  --accent2:#c8956a;
-  --text:#f0ede8;
-  --text2:#9e9bb5;
-  --text3:#6e6b82;
+  --bg:#1a1008;
+  --bg2:#120d05;
+  --surface:#241808;
+  --surface2:#2e2010;
+  --border:#5a3a10;
+  --border2:#7a5020;
+  --accent:#d4951a;
+  --accent2:#f0b830;
+  --accent3:#e07820;
+  --saffron:#ff9933;
+  --gold:#ffd700;
+  --maroon:#8b1a1a;
+  --maroon2:#b22222;
+  --cream:#fdf5e6;
+  --text:#fdf0d0;
+  --text2:#c8a870;
+  --text3:#8a6840;
   --red:#e05c5c;
   --green:#5cb85c;
-  --blue:#5b9bd5;
-  --shadow:0 8px 32px rgba(0,0,0,0.4);
-  --radius:14px;
+  --blue:#7bafd4;
+  --shadow:0 8px 40px rgba(0,0,0,.6);
+  --glow:0 0 20px rgba(212,149,26,.2);
   --fs:'Poppins',sans-serif;
   --fd:'Playfair Display',serif;
-  --card-w:200px;
-  --card-h:240px;
+  --card-w:195px;
 }
 .light{
-  --bg:#f5f2eb;
-  --surface:#ffffff;
-  --surface2:#f0ede5;
-  --border:#ddd8cc;
-  --text:#1a1814;
-  --text2:#5a5650;
-  --text3:#9a9690;
-  --shadow:0 8px 32px rgba(0,0,0,0.1);
+  --bg:#fdf5e0;--bg2:#f5e8c8;--surface:#fff8ee;--surface2:#f5ead0;
+  --border:#d4a040;--border2:#b8852a;--text:#2a1a00;--text2:#7a4a10;
+  --text3:#a06820;--shadow:0 8px 40px rgba(0,0,0,.15);--glow:0 0 20px rgba(212,149,26,.15);
 }
+
 html,body{height:100%;font-family:var(--fs);background:var(--bg);color:var(--text);transition:background .3s,color .3s}
-body{display:flex;flex-direction:column;overflow:hidden}
+body{display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+/* MANDALA BG */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(212,149,26,.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(139,26,26,.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(212,149,26,.03) 0%, transparent 70%);
+  pointer-events:none;z-index:0;
+}
 
 /* TOPBAR */
 .topbar{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 20px;
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;z-index:100;
-  flex-wrap:wrap;
+  display:flex;align-items:center;gap:10px;
+  padding:0 18px;height:58px;
+  background:linear-gradient(135deg,var(--surface) 0%,var(--surface2) 100%);
+  border-bottom:2px solid var(--border);
+  flex-shrink:0;z-index:100;flex-wrap:wrap;
+  box-shadow:0 2px 20px rgba(0,0,0,.4);
+  position:relative;
 }
-.topbar-title{
-  font-family:var(--fd);font-size:1.3rem;font-weight:700;
-  color:var(--accent);white-space:nowrap;margin-right:4px;
+.topbar::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--accent2),var(--saffron),var(--accent2),transparent);
 }
-.topbar-title span{color:var(--text);font-weight:400;font-size:.85rem;font-family:var(--fs)}
-.search-wrap{position:relative;flex:1;min-width:160px;max-width:280px}
-.search-wrap input{
-  width:100%;padding:8px 12px 8px 36px;
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:30px;color:var(--text);font-family:var(--fs);font-size:.82rem;
-  outline:none;transition:border .2s;
-}
-.search-wrap input:focus{border-color:var(--accent)}
-.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:.4}
-.btn{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 14px;border:none;border-radius:8px;
-  font-family:var(--fs);font-size:.8rem;font-weight:500;
-  cursor:pointer;transition:all .2s;white-space:nowrap;
-}
-.btn-primary{background:var(--accent);color:#1a1814}
-.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
-.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
-.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-.btn-danger{background:var(--red);color:#fff}
-.btn-danger:hover{opacity:.85}
-.btn-icon{padding:8px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.btn-icon:hover{border-color:var(--accent);color:var(--accent)}
-.stat-chip{
-  padding:6px 12px;background:var(--surface2);border:1px solid var(--border);
-  border-radius:20px;font-size:.75rem;color:var(--text2);white-space:nowrap;
-}
-.stat-chip b{color:var(--accent)}
 
-/* MAIN LAYOUT */
-.main{display:flex;flex:1;overflow:hidden}
+.brand{display:flex;align-items:center;gap:10px;margin-right:6px}
+.brand-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 0 12px rgba(212,149,26,.4);flex-shrink:0}
+.brand-text{line-height:1.1}
+.brand-hi{font-family:'Tiro Devanagari Hindi','Playfair Display',serif;font-size:.82rem;color:var(--accent2);letter-spacing:1px}
+.brand-en{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--text);white-space:nowrap}
+
+.search-wrap{position:relative;flex:1;min-width:140px;max-width:240px}
+.search-wrap input{width:100%;padding:7px 12px 7px 33px;background:var(--surface2);border:1px solid var(--border);border-radius:30px;color:var(--text);font-family:var(--fs);font-size:.79rem;outline:none;transition:border .2s}
+.search-wrap input::placeholder{color:var(--text3)}
+.search-wrap input:focus{border-color:var(--accent)}
+.si{position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:.45;pointer-events:none;color:var(--accent)}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border:none;border-radius:8px;font-family:var(--fs);font-size:.77rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent3));color:#1a0a00;font-weight:600;box-shadow:0 2px 12px rgba(212,149,26,.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(212,149,26,.5)}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:var(--maroon2);color:#fff}
+.btn-danger:hover{opacity:.85}
+.btn-icon{padding:7px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.btn-icon:hover{border-color:var(--accent);color:var(--accent)}
+.stat-chip{padding:4px 11px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:.7rem;color:var(--text2);white-space:nowrap}
+.stat-chip b{color:var(--accent2)}
+
+/* LAYOUT */
+.main{display:flex;flex:1;overflow:hidden;position:relative;z-index:1}
 
 /* SIDEBAR */
-.sidebar{
-  width:260px;flex-shrink:0;
-  background:var(--surface);
-  border-right:1px solid var(--border);
-  display:flex;flex-direction:column;
-  overflow:hidden;
-  transition:width .3s;
-}
+.sidebar{width:245px;flex-shrink:0;background:var(--surface);border-right:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width .3s;position:relative}
+.sidebar::after{content:'';position:absolute;top:0;right:-1px;width:1px;height:100%;background:linear-gradient(to bottom,transparent,var(--accent),transparent)}
 .sidebar.collapsed{width:0;border:none}
-.sidebar-inner{min-width:260px;display:flex;flex-direction:column;height:100%;overflow-y:auto}
-.sidebar-section{padding:14px 16px;border-bottom:1px solid var(--border)}
-.sidebar-section h3{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:12px}
-.member-list{display:flex;flex-direction:column;gap:6px;flex:1;overflow-y:auto;padding:12px}
-.member-list-item{
-  display:flex;align-items:center;gap:10px;
-  padding:8px 10px;border-radius:10px;
-  background:var(--surface2);border:1px solid transparent;
-  cursor:pointer;transition:all .2s;
-}
-.member-list-item:hover{border-color:var(--accent)}
-.member-list-item.active{border-color:var(--accent);background:rgba(232,184,109,.08)}
-.member-list-item img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0}
-.member-list-item .mlname{font-size:.82rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.member-list-item .mlgen{font-size:.7rem;color:var(--text3)}
+.sidebar-inner{min-width:245px;display:flex;flex-direction:column;height:100%}
+.sidebar-head{padding:12px 14px;border-bottom:1px solid var(--border);font-size:.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--text3);display:flex;align-items:center;gap:8px}
+.sidebar-head::before{content:'🌺';font-size:.9rem}
+.member-list{display:flex;flex-direction:column;gap:4px;flex:1;overflow-y:auto;padding:9px}
+.member-list::-webkit-scrollbar{width:3px}
+.member-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.ml-item{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:10px;background:var(--surface2);border:1px solid transparent;cursor:pointer;transition:all .2s}
+.ml-item:hover{border-color:var(--accent)}
+.ml-item.active{border-color:var(--accent);background:rgba(212,149,26,.1)}
+.ml-item img{width:33px;height:33px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1.5px solid var(--border2)}
+.ml-name{font-size:.79rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.ml-title{font-size:.66rem;color:var(--accent);font-weight:500}
+.ml-sub{font-size:.65rem;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* CANVAS */
-.canvas-wrap{
-  flex:1;overflow:auto;position:relative;
-  background:var(--bg);
-}
+.canvas-wrap{flex:1;overflow:auto;position:relative;background:var(--bg2)}
 .canvas-wrap::-webkit-scrollbar{width:6px;height:6px}
-.canvas-wrap::-webkit-scrollbar-track{background:transparent}
 .canvas-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-.tree-canvas{
-  position:relative;min-width:100%;min-height:100%;
-  padding:60px 40px 100px;
-}
-.gen-row{
-  display:flex;align-items:flex-start;justify-content:center;
-  gap:40px;flex-wrap:wrap;
-  margin-bottom:100px;position:relative;
-}
-.gen-label{
-  position:absolute;left:10px;top:50%;transform:translateY(-50%);
-  font-size:.7rem;text-transform:uppercase;letter-spacing:2px;
-  color:var(--text3);writing-mode:vertical-rl;
-  text-orientation:mixed;user-select:none;
-}
-.couple-group{display:flex;align-items:flex-start;gap:0;position:relative}
-.marriage-line{
-  width:32px;height:2px;background:var(--accent);
-  align-self:70px;margin-top:68px;flex-shrink:0;position:relative;
-}
-.marriage-line::after{
-  content:'♥';position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  font-size:.7rem;color:var(--accent);
-  background:var(--bg);padding:0 3px;
-}
+.tree-canvas{position:relative;min-width:100%;min-height:100%;padding:80px 80px 140px;transform-origin:top left;transition:transform .2s}
 
-/* MEMBER CARD */
+.gen-row{display:flex;align-items:flex-start;justify-content:center;gap:40px;flex-wrap:wrap;margin-bottom:120px;position:relative;min-height:270px}
+.gen-label{position:absolute;left:-55px;top:50%;transform:translateY(-50%);font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--text3);writing-mode:vertical-rl;user-select:none;display:flex;flex-direction:column;align-items:center;gap:4px}
+.gen-label-num{width:22px;height:22px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--accent);font-weight:600}
+
+.couple-group{display:flex;align-items:flex-start;position:relative}
+.marriage-bar{width:30px;height:2px;background:linear-gradient(to right,var(--maroon2),var(--accent2),var(--maroon2));align-self:auto;margin-top:72px;flex-shrink:0;position:relative}
+.marriage-bar::before{content:'🔴';position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:.55rem}
+
+/* CARD */
 .member-card{
   width:var(--card-w);flex-shrink:0;
-  background:var(--surface);
+  background:linear-gradient(160deg,var(--surface) 0%,var(--surface2) 100%);
   border:1.5px solid var(--border);
-  border-radius:var(--radius);
-  padding:18px 14px 14px;
+  border-radius:14px;padding:16px 12px 12px;
   display:flex;flex-direction:column;align-items:center;
-  cursor:pointer;transition:all .3s;
-  position:relative;
+  cursor:pointer;transition:all .3s;position:relative;
   box-shadow:var(--shadow);
 }
-.member-card:hover{
-  border-color:var(--accent);
-  transform:translateY(-4px);
-  box-shadow:0 16px 40px rgba(0,0,0,.5),0 0 0 1px var(--accent);
+.member-card::before{
+  content:'';position:absolute;inset:0;border-radius:14px;
+  background:linear-gradient(135deg,rgba(212,149,26,.08) 0%,transparent 60%);
+  pointer-events:none;
 }
-.member-card.selected{border-color:var(--accent);background:rgba(232,184,109,.06)}
-.member-card.dim{opacity:.35}
-.card-avatar{
-  width:72px;height:72px;border-radius:50%;
-  object-fit:cover;border:2.5px solid var(--border);
-  margin-bottom:10px;transition:border .2s;
+.member-card::after{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(to right,transparent,var(--accent),transparent);
 }
-.member-card:hover .card-avatar{border-color:var(--accent)}
-.card-name{
-  font-size:.88rem;font-weight:600;text-align:center;
-  margin-bottom:4px;color:var(--text);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  max-width:100%;
+.member-card:hover{border-color:var(--accent2);transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.6),var(--glow)}
+.member-card.selected{border-color:var(--accent2);box-shadow:0 0 0 2px var(--accent),var(--shadow)}
+.member-card.dim{opacity:.25;pointer-events:none}
+.member-card.late-member{border-color:var(--text3);opacity:.85}
+.member-card.late-member::after{background:linear-gradient(to right,transparent,var(--text3),transparent)}
+
+.card-avatar-wrap{position:relative;margin-bottom:9px}
+.card-avatar{width:68px;height:68px;border-radius:50%;object-fit:cover;border:2.5px solid var(--border2);transition:border .2s}
+.member-card:hover .card-avatar{border-color:var(--accent2)}
+.late-ring{position:absolute;inset:-3px;border-radius:50%;border:2px dashed var(--text3);animation:rotateDash 10s linear infinite}
+@keyframes rotateDash{to{transform:rotate(360deg)}}
+
+.card-title-badge{
+  position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+  font-size:.58rem;padding:1px 8px;border-radius:10px;white-space:nowrap;
+  font-weight:600;letter-spacing:.5px;
 }
-.card-bio{
-  font-size:.72rem;color:var(--text2);text-align:center;
-  line-height:1.4;display:-webkit-box;
-  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-  margin-bottom:8px;
-}
-.card-gen-badge{
-  font-size:.65rem;padding:2px 8px;border-radius:10px;
-  background:rgba(232,184,109,.15);color:var(--accent);
-  font-weight:500;
-}
-.card-actions{
-  position:absolute;top:6px;right:6px;
-  display:flex;gap:4px;opacity:0;transition:opacity .2s;
-}
+.badge-mr{background:rgba(91,155,212,.3);color:var(--blue);border:1px solid rgba(91,155,212,.4)}
+.badge-mrs{background:rgba(220,120,180,.3);color:#e090c0;border:1px solid rgba(220,120,180,.4)}
+.badge-miss{background:rgba(180,120,220,.3);color:#c090e0;border:1px solid rgba(180,120,220,.4)}
+.badge-late{background:rgba(100,100,100,.4);color:#aaa;border:1px solid rgba(100,100,100,.5)}
+.badge-dr{background:rgba(92,184,92,.3);color:var(--green);border:1px solid rgba(92,184,92,.4)}
+.badge-dr-late{background:rgba(80,80,80,.4);color:#999;border:1px solid rgba(80,80,80,.5)}
+
+.card-name{font-size:.83rem;font-weight:600;text-align:center;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;color:var(--text)}
+.card-bio{font-size:.68rem;color:var(--text2);text-align:center;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:7px}
+.card-gen{font-size:.6rem;padding:2px 8px;border-radius:10px;background:rgba(212,149,26,.12);color:var(--accent2);font-weight:500;border:1px solid rgba(212,149,26,.2)}
+
+.card-actions{position:absolute;top:5px;right:5px;display:flex;gap:3px;opacity:0;transition:opacity .2s}
 .member-card:hover .card-actions{opacity:1}
-.card-btn{
-  width:24px;height:24px;border-radius:6px;border:none;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:.7rem;transition:all .2s;
-}
-.card-btn-del{background:rgba(224,92,92,.2);color:var(--red)}
-.card-btn-del:hover{background:var(--red);color:#fff}
-.card-btn-edit{background:rgba(91,155,213,.2);color:var(--blue)}
+.card-btn{width:22px;height:22px;border-radius:5px;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.62rem;transition:all .2s}
+.card-btn-del{background:rgba(178,34,34,.25);color:var(--maroon2)}
+.card-btn-del:hover{background:var(--maroon2);color:#fff}
+.card-btn-edit{background:rgba(91,155,212,.2);color:var(--blue)}
 .card-btn-edit:hover{background:var(--blue);color:#fff}
 
-/* SVG CONNECTORS */
-.svg-overlay{
-  position:absolute;top:0;left:0;
-  pointer-events:none;overflow:visible;
-}
+/* SVG */
+.svg-overlay{position:absolute;top:0;left:0;pointer-events:none;overflow:visible}
 
-/* EMPTY STATE */
-.empty-state{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  text-align:center;pointer-events:none;
-}
-.empty-state svg{opacity:.15;margin-bottom:20px}
-.empty-state h2{font-family:var(--fd);font-size:1.8rem;color:var(--text2);margin-bottom:8px}
-.empty-state p{font-size:.85rem;color:var(--text3)}
+/* EMPTY */
+.empty-state{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.empty-icon{font-size:4rem;margin-bottom:12px;opacity:.3}
+.empty-state h2{font-family:var(--fd);font-size:1.6rem;color:var(--text2);margin-bottom:8px}
+.empty-state p{font-size:.8rem;color:var(--text3)}
 
 /* DETAIL PANEL */
-.detail-panel{
-  width:300px;flex-shrink:0;
-  background:var(--surface);
-  border-left:1px solid var(--border);
-  display:flex;flex-direction:column;
-  overflow:hidden;
-  transform:translateX(100%);
-  transition:transform .3s,width .3s;
-  position:relative;
-}
-.detail-panel.open{transform:translateX(0)}
-.detail-panel-inner{padding:20px;overflow-y:auto;flex:1}
-.dp-avatar{
-  width:80px;height:80px;border-radius:50%;
-  object-fit:cover;border:2px solid var(--accent);
-  margin:0 auto 12px;display:block;
-}
-.dp-name{
-  font-family:var(--fd);font-size:1.2rem;
-  text-align:center;margin-bottom:4px;
-}
-.dp-bio{
-  font-size:.8rem;color:var(--text2);text-align:center;
-  margin-bottom:16px;line-height:1.5;
-}
-.dp-section{margin-bottom:16px}
-.dp-section h4{
-  font-size:.68rem;text-transform:uppercase;letter-spacing:2px;
-  color:var(--text3);margin-bottom:8px;
-}
-.rel-chip{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 10px;border-radius:20px;font-size:.75rem;
-  margin:3px;background:var(--surface2);border:1px solid var(--border);
-  transition:border .2s;cursor:default;
-}
-.rel-chip .rel-del{
-  width:14px;height:14px;border-radius:50%;border:none;
-  background:rgba(224,92,92,.3);color:var(--red);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:.6rem;transition:all .2s;padding:0;
-  line-height:1;
-}
-.rel-chip .rel-del:hover{background:var(--red);color:#fff}
-.rel-parent{border-color:rgba(91,155,213,.4);color:var(--blue)}
-.rel-child{border-color:rgba(92,184,92,.4);color:var(--green)}
-.rel-spouse{border-color:rgba(232,184,109,.4);color:var(--accent)}
-.rel-sibling{border-color:rgba(180,120,220,.4);color:#b478dc}
-.dp-close{
-  position:absolute;top:12px;right:12px;
-  width:28px;height:28px;border-radius:50%;
-  background:var(--surface2);border:1px solid var(--border);
-  color:var(--text2);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.9rem;transition:all .2s;
-}
-.dp-close:hover{border-color:var(--red);color:var(--red)}
+.detail-panel{width:0;flex-shrink:0;background:var(--surface);border-left:2px solid transparent;display:flex;flex-direction:column;overflow:hidden;transition:width .3s,border .3s;position:relative}
+.detail-panel::before{content:'';position:absolute;top:0;left:0;width:1px;height:100%;background:linear-gradient(to bottom,transparent,var(--accent),transparent);pointer-events:none}
+.detail-panel.open{width:285px;border-color:var(--border)}
+.dp-inner{min-width:285px;padding:16px;overflow-y:auto;height:100%}
+.dp-inner::-webkit-scrollbar{width:3px}
+.dp-inner::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.dp-avatar-wrap{position:relative;width:80px;margin:0 auto 10px}
+.dp-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2.5px solid var(--accent);display:block}
+.dp-late-ring{position:absolute;inset:-4px;border-radius:50%;border:2px dashed var(--text3);animation:rotateDash 10s linear infinite}
+
+.dp-title-badge{text-align:center;margin-bottom:4px;font-size:.7rem;font-weight:600;letter-spacing:1px;color:var(--accent2)}
+.dp-name{font-family:var(--fd);font-size:1.1rem;text-align:center;margin-bottom:3px;color:var(--text)}
+.dp-bio{font-size:.74rem;color:var(--text2);text-align:center;margin-bottom:14px;line-height:1.5}
+
+.dp-sec{margin-bottom:12px}
+.dp-sec h4{font-size:.62rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--text3);margin-bottom:7px;padding-bottom:4px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
+.dp-close{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:all .2s;z-index:2}
+.dp-close:hover{border-color:var(--maroon2);color:var(--maroon2)}
+
+.rel-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:.7rem;margin:2px;background:var(--surface2);border:1px solid var(--border);transition:border .2s}
+.rdel{width:13px;height:13px;border-radius:50%;border:none;background:rgba(178,34,34,.25);color:var(--maroon2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.55rem;padding:0;transition:all .2s;line-height:1}
+.rdel:hover{background:var(--maroon2)!important;color:#fff!important}
+.rel-parent{border-color:rgba(91,155,212,.35);color:var(--blue)}
+.rel-child{border-color:rgba(92,184,92,.35);color:var(--green)}
+.rel-spouse{border-color:rgba(212,149,26,.35);color:var(--accent2)}
+.rel-sibling{border-color:rgba(255,153,51,.35);color:var(--saffron)}
 
 /* MODAL */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.6);
-  backdrop-filter:blur(6px);z-index:500;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .25s;
-}
-.modal-overlay.show{opacity:1;pointer-events:all}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(7px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.show{opacity:1;pointer-events:all}
 .modal{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:18px;padding:28px;width:90%;max-width:440px;
-  box-shadow:0 24px 80px rgba(0,0,0,.5);
-  transform:scale(.95);transition:transform .25s;
+  background:linear-gradient(160deg,var(--surface) 0%,var(--surface2) 100%);
+  border:1.5px solid var(--border);border-radius:18px;padding:24px;
+  width:92%;max-width:470px;max-height:90vh;overflow-y:auto;
+  box-shadow:0 24px 80px rgba(0,0,0,.7),var(--glow);
+  transform:scale(.94);transition:transform .25s;
+  position:relative;
 }
-.modal-overlay.show .modal{transform:scale(1)}
-.modal h2{
-  font-family:var(--fd);font-size:1.3rem;
-  margin-bottom:20px;color:var(--accent);
-}
-.form-group{margin-bottom:14px}
-.form-group label{
-  display:block;font-size:.75rem;font-weight:500;
-  color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;
-}
-.form-group input,
-.form-group select,
-.form-group textarea{
-  width:100%;padding:10px 12px;
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:8px;color:var(--text);
-  font-family:var(--fs);font-size:.85rem;
-  outline:none;transition:border .2s;
-}
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{border-color:var(--accent)}
-.form-group textarea{resize:vertical;min-height:70px}
-.form-group select option{background:var(--surface)}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
-.avatar-preview{
-  width:60px;height:60px;border-radius:50%;
-  object-fit:cover;border:2px solid var(--border);
-  margin-bottom:8px;
-}
-.avatar-preview-wrap{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.modal::before{content:'';position:absolute;top:0;left:15%;right:15%;height:2px;background:linear-gradient(to right,transparent,var(--accent2),var(--saffron),var(--accent2),transparent);border-radius:2px}
+.modal::-webkit-scrollbar{width:3px}
+.modal::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.overlay.show .modal{transform:scale(1)}
+.modal h2{font-family:var(--fd);font-size:1.2rem;margin-bottom:18px;color:var(--accent2);display:flex;align-items:center;gap:8px}
+
+.fg{margin-bottom:11px}
+.fg label{display:block;font-size:.7rem;font-weight:500;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:1.5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 11px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--fs);font-size:.82rem;outline:none;transition:border .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent)}
+.fg input::placeholder{color:var(--text3)}
+.fg textarea{resize:vertical;min-height:62px}
+.fg select option{background:var(--surface)}
+
+.title-row{display:flex;gap:8px;align-items:flex-end}
+.title-row .fg{margin-bottom:0}
+.title-select{width:140px!important;flex-shrink:0}
+
+.avatar-prev-wrap{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.avatar-prev{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)}
+
+.sec-div{font-size:.65rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--text3);margin:14px 0 9px;padding-bottom:5px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.sec-div::before{content:'🌸';font-size:.8rem}
+.rel-note{font-size:.7rem;color:var(--text3);margin-bottom:8px;line-height:1.5}
+
+.rel-rows{display:flex;flex-direction:column;gap:7px;margin-bottom:4px}
+.rel-row{display:flex;gap:6px;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:8px 10px}
+.rel-row select{flex:1;padding:5px 8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--fs);font-size:.76rem;outline:none}
+.rel-row select:focus{border-color:var(--accent)}
+.rtype{width:130px;flex-shrink:0}
+.btn-add-rel-row{width:100%;padding:7px;border:1px dashed var(--border);border-radius:8px;background:transparent;color:var(--text3);font-family:var(--fs);font-size:.76rem;cursor:pointer;transition:all .2s;margin-top:2px}
+.btn-add-rel-row:hover{border-color:var(--accent);color:var(--accent)}
+.btn-rm-row{width:22px;height:22px;border:none;border-radius:5px;background:rgba(178,34,34,.18);color:var(--maroon2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;transition:all .2s}
+.btn-rm-row:hover{background:var(--maroon2);color:#fff}
+
+.modal-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
 
 /* TOAST */
-.toast-wrap{
-  position:fixed;bottom:24px;right:24px;
-  display:flex;flex-direction:column;gap:8px;z-index:999;
-}
-.toast{
-  padding:10px 16px;border-radius:10px;font-size:.82rem;
-  background:var(--surface);border:1px solid var(--border);
-  box-shadow:var(--shadow);color:var(--text);
-  animation:toastIn .3s ease;
-  display:flex;align-items:center;gap:8px;
-  max-width:280px;
-}
+.toast-wrap{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:6px;z-index:999}
+.toast{padding:9px 15px;border-radius:9px;font-size:.78rem;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);color:var(--text);animation:tIn .3s ease;display:flex;align-items:center;gap:7px;max-width:260px}
 .toast.success{border-color:var(--green);color:var(--green)}
-.toast.error{border-color:var(--red);color:var(--red)}
-.toast.info{border-color:var(--accent);color:var(--accent)}
-@keyframes toastIn{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.error{border-color:var(--maroon2);color:var(--maroon2)}
+.toast.info{border-color:var(--accent);color:var(--accent2)}
+@keyframes tIn{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
 
-/* RESPONSIVE */
+/* ZOOM */
+.zoom-bar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:100;background:var(--surface);border:1px solid var(--border);border-radius:30px;padding:5px 9px;box-shadow:var(--shadow)}
+.zbtn{width:29px;height:29px;border-radius:50%;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:.9rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.zbtn:hover{background:var(--accent);color:#1a0a00}
+.zlvl{font-size:.72rem;color:var(--text2);padding:0 3px;align-self:center;min-width:36px;text-align:center}
+
+/* DIVIDER ORNAMENT between generations */
+.gen-ornament{
+  position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);
+  font-size:.8rem;color:var(--text3);letter-spacing:8px;
+  white-space:nowrap;
+}
+
 @media(max-width:768px){
   .sidebar{position:absolute;z-index:200;height:100%;box-shadow:var(--shadow)}
-  .sidebar.collapsed{width:0}
-  .detail-panel{position:absolute;right:0;z-index:200;height:100%;box-shadow:var(--shadow)}
+  .detail-panel.open{position:absolute;right:0;z-index:200;height:100%;box-shadow:var(--shadow);width:260px}
   .stat-chip{display:none}
-  .topbar-title span{display:none}
+  .brand-hi{display:none}
 }
-
-.zoom-controls{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  display:flex;gap:8px;z-index:100;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:30px;padding:6px 10px;box-shadow:var(--shadow);
-}
-.zoom-btn{
-  width:32px;height:32px;border-radius:50%;border:none;
-  background:var(--surface2);color:var(--text);
-  cursor:pointer;font-size:1rem;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .2s;
-}
-.zoom-btn:hover{background:var(--accent);color:#1a1814}
-.zoom-level{font-size:.78rem;color:var(--text2);padding:0 4px;align-self:center;min-width:38px;text-align:center}
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <button class="btn-icon" id="sidebarToggle" title="Toggle member list">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  <button class="btn-icon" id="btnSidebar">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
-  <div class="topbar-title">Tripathi Family Tree <span>v1.0</span></div>
-  <div class="search-wrap">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="searchInput" placeholder="Search member...">
+  <div class="brand">
+    <div class="brand-icon">&#x1F33A;</div>
+    <div class="brand-text">
+      <div class="brand-hi">&#x0924;&#x094D;&#x0930;&#x093F;&#x092A;&#x093E;&#x0920;&#x0940; &#x092A;&#x0930;&#x093F;&#x0935;&#x093E;&#x0930;</div>
+      <div class="brand-en">Tripathi Parivar</div>
+    </div>
   </div>
-  <div class="stat-chip">Members: <b id="statMembers">0</b></div>
-  <div class="stat-chip">Generations: <b id="statGens">0</b></div>
-  <button class="btn btn-primary" id="btnAddMember">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    Add Member
-  </button>
-  <button class="btn btn-ghost" id="btnAddRel">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    Add Relation
-  </button>
-  <button class="btn btn-ghost" id="btnExport">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    Export
-  </button>
-  <label class="btn btn-ghost" style="cursor:pointer">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-    Import
-    <input type="file" id="importInput" accept=".json" style="display:none">
-  </label>
-  <button class="btn-icon" id="btnDark" title="Toggle dark mode">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-  </button>
+  <div class="search-wrap">
+    <svg class="si" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="Search family member...">
+  </div>
+  <div class="stat-chip">Sadasya: <b id="statMembers">0</b></div>
+  <div class="stat-chip">Peedhiyan: <b id="statGens">0</b></div>
+  <button class="btn btn-primary" id="btnAdd">&#x2295; Nayi Sadasyata</button>
+  <button class="btn btn-ghost" id="btnExport">&#8595; Nikalo</button>
+  <label class="btn btn-ghost" style="cursor:pointer">&#8593; Daalo<input type="file" id="importFile" accept=".json" style="display:none"></label>
+  <button class="btn-icon" id="btnTheme" title="Toggle theme">&#9788;</button>
 </div>
 
-<!-- MAIN -->
 <div class="main">
-
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-inner">
-      <div class="sidebar-section">
-        <h3>All Members</h3>
-      </div>
+      <div class="sidebar-head">Parivaar Ke Sadasya</div>
       <div class="member-list" id="memberList"></div>
     </div>
   </div>
@@ -422,682 +337,554 @@ body{display:flex;flex-direction:column;overflow:hidden}
     <div class="tree-canvas" id="treeCanvas">
       <svg class="svg-overlay" id="svgOverlay"></svg>
       <div class="empty-state" id="emptyState">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <h2>No members yet</h2>
-        <p>Click "Add Member" to start building<br>your family tree</p>
+        <div class="empty-icon">&#x1F333;</div>
+        <h2>Parivar Ka Ped</h2>
+        <p>Apna parivar shuru karne ke liye<br><b>Nayi Sadasyata</b> par click karein</p>
       </div>
     </div>
   </div>
 
   <!-- DETAIL PANEL -->
   <div class="detail-panel" id="detailPanel">
-    <button class="dp-close" id="dpClose">✕</button>
-    <div class="detail-panel-inner" id="detailPanelInner"></div>
+    <button class="dp-close" id="dpClose">&#x2715;</button>
+    <div class="dp-inner" id="dpInner"></div>
   </div>
 </div>
 
-<!-- ZOOM CONTROLS -->
-<div class="zoom-controls">
-  <button class="zoom-btn" id="zoomOut">−</button>
-  <div class="zoom-level" id="zoomLevel">100%</div>
-  <button class="zoom-btn" id="zoomIn">+</button>
-  <button class="zoom-btn" id="zoomReset" title="Reset zoom" style="font-size:.7rem">⌂</button>
+<div class="zoom-bar">
+  <button class="zbtn" id="zOut">&#8722;</button>
+  <div class="zlvl" id="zlvl">100%</div>
+  <button class="zbtn" id="zIn">+</button>
+  <button class="zbtn" id="zReset" style="font-size:.62rem">&#8962;</button>
 </div>
 
-<!-- TOAST -->
 <div class="toast-wrap" id="toastWrap"></div>
 
-<!-- MODAL: ADD MEMBER -->
-<div class="modal-overlay" id="modalMember">
+<!-- MODAL -->
+<div class="overlay" id="overlayMember">
   <div class="modal">
-    <h2 id="modalMemberTitle">Add New Member</h2>
-    <div class="avatar-preview-wrap">
-      <img id="avatarPreview" class="avatar-preview" src="" alt="preview">
+    <h2 id="modalTitle">&#x1F33A; Naya Sadasyata Jodein</h2>
+
+    <div class="avatar-prev-wrap">
+      <img id="avatarPrev" class="avatar-prev" src="" alt="">
       <div style="flex:1">
-        <div class="form-group" style="margin-bottom:0">
+        <div class="fg" style="margin-bottom:0">
           <label>Photo URL (optional)</label>
-          <input type="text" id="memberImg" placeholder="https://... or leave blank">
+          <input type="text" id="fImg" placeholder="https://... ya khali chhodein">
         </div>
       </div>
     </div>
-    <div class="form-group">
-      <label>Full Name *</label>
-      <input type="text" id="memberName" placeholder="e.g. Ramesh Tripathi">
-    </div>
-    <div class="form-group">
-      <label>Short Bio</label>
-      <textarea id="memberBio" placeholder="e.g. Born 1952, farmer, patriarch of the family"></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" id="cancelMember">Cancel</button>
-      <button class="btn btn-primary" id="saveMember">Save Member</button>
-    </div>
-  </div>
-</div>
 
-<!-- MODAL: ADD RELATIONSHIP -->
-<div class="modal-overlay" id="modalRel">
-  <div class="modal">
-    <h2>Add Relationship</h2>
-    <div class="form-group">
-      <label>From Member *</label>
-      <select id="relFrom"></select>
+    <div class="title-row">
+      <div class="fg">
+        <label>Title / Sambodhan *</label>
+        <select id="fTitle" class="title-select">
+          <option value="Mr.">Mr. (Shri)</option>
+          <option value="Mrs.">Mrs. (Shrimati)</option>
+          <option value="Miss">Miss (Kumari)</option>
+          <option value="Dr.">Dr. (Doctor)</option>
+          <option value="Late">Late (Swargiya)</option>
+          <option value="Late Dr.">Late Dr.</option>
+          <option value="Prof.">Prof.</option>
+          <option value="">None</option>
+        </select>
+      </div>
+      <div class="fg" style="flex:1">
+        <label>Poora Naam *</label>
+        <input type="text" id="fName" placeholder="e.g. Ramesh Tripathi">
+      </div>
     </div>
-    <div class="form-group">
-      <label>Relationship Type *</label>
-      <select id="relType">
-        <option value="spouse">Spouse</option>
-        <option value="parent">Is Parent of</option>
-        <option value="child">Is Child of</option>
-        <option value="sibling">Is Sibling of</option>
-      </select>
+
+    <div class="fg">
+      <label>Parichay (Short Bio)</label>
+      <textarea id="fBio" placeholder="e.g. Vyavsayi, Jaunpur mein rehte hain, janm 1970"></textarea>
     </div>
-    <div class="form-group">
-      <label>To Member *</label>
-      <select id="relTo"></select>
+
+    <div id="relSection">
+      <div class="sec-div">Rishtedari (Relationships)</div>
+      <div class="rel-note" id="relNote">Kam se kam ek rishta chunein taaki yeh vyakti sahi jagah pe daala jaye.</div>
+      <div class="rel-rows" id="relRows"></div>
+      <button class="btn-add-rel-row" id="btnAddRelRow">+ Aur rishta jodein</button>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" id="cancelRel">Cancel</button>
-      <button class="btn btn-primary" id="saveRel">Save Relationship</button>
+
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="cancelMember">Raddh Karein</button>
+      <button class="btn btn-primary" id="saveMember">&#x2713; Surakshit Karein</button>
     </div>
   </div>
 </div>
 
 <script>
-var state = {
-  members: {},
-  relationships: [],
-  nextId: 1,
-  selectedId: null,
-  zoom: 1,
-  editingId: null,
-  searchQuery: ''
+var DEFAULT_AVT = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Crect width='72' height='72' fill='%23241808'/%3E%3Ccircle cx='36' cy='28' r='14' fill='%235a3a10'/%3E%3Cellipse cx='36' cy='62' rx='22' ry='16' fill='%235a3a10'/%3E%3C/svg%3E";
+
+var S = {
+  members:{}, rels:[], nid:1, sel:null, editId:null, q:'', zoom:1
 };
 
-var DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Crect width='72' height='72' fill='%23333'/%3E%3Ccircle cx='36' cy='28' r='14' fill='%23666'/%3E%3Cellipse cx='36' cy='62' rx='22' ry='16' fill='%23666'/%3E%3C/svg%3E";
+function uid(){ return 'M'+(S.nid++); }
 
-function uid() { return 'm' + (state.nextId++); }
-
-function toast(msg, type) {
-  type = type || 'info';
-  var wrap = document.getElementById('toastWrap');
-  var el = document.createElement('div');
-  el.className = 'toast ' + type;
-  el.textContent = msg;
-  wrap.appendChild(el);
-  setTimeout(function() {
-    el.style.animation = 'toastIn .3s ease reverse';
-    setTimeout(function() { el.remove(); }, 300);
-  }, 2800);
+function toast(msg,type){
+  var w=document.getElementById('toastWrap');
+  var el=document.createElement('div'); el.className='toast '+(type||'info');
+  el.textContent=msg; w.appendChild(el);
+  setTimeout(function(){ el.style.animation='tIn .3s ease reverse'; setTimeout(function(){ el.remove(); },300); },2800);
 }
 
-function saveToStorage() {
-  try {
-    localStorage.setItem('tripathiFamilyTree', JSON.stringify({
-      members: state.members,
-      relationships: state.relationships,
-      nextId: state.nextId
-    }));
-  } catch(e) {}
+function save(){
+  try{ localStorage.setItem('tfTree2',JSON.stringify({members:S.members,rels:S.rels,nid:S.nid})); }catch(e){}
 }
 
-function loadFromStorage() {
-  try {
-    var raw = localStorage.getItem('tripathiFamilyTree');
-    if (!raw) return;
-    var data = JSON.parse(raw);
-    state.members = data.members || {};
-    state.relationships = data.relationships || [];
-    state.nextId = data.nextId || 1;
-  } catch(e) {}
+function load(){
+  try{
+    var d=JSON.parse(localStorage.getItem('tfTree2')||'null');
+    if(!d) return; S.members=d.members||{}; S.rels=d.rels||[]; S.nid=d.nid||1;
+  }catch(e){}
 }
 
-function getMemberName(id) {
-  return state.members[id] ? state.members[id].name : '?';
+function displayName(m){
+  if(!m) return '?';
+  return (m.title?(m.title+' '):'') + m.name;
 }
 
-function calculateGenerations() {
-  var members = Object.keys(state.members);
-  if (!members.length) return {};
-  var gens = {};
-  var parentOf = {};
-  state.relationships.forEach(function(r) {
-    if (r.type === 'parent') {
-      if (!parentOf[r.to]) parentOf[r.to] = [];
-      parentOf[r.to].push(r.from);
-    }
-    if (r.type === 'child') {
-      if (!parentOf[r.from]) parentOf[r.from] = [];
-      parentOf[r.from].push(r.to);
-    }
+function isLate(m){ return m.title&&(m.title.indexOf('Late')!==-1); }
+
+function titleBadgeClass(title){
+  if(!title) return '';
+  if(title==='Late Dr.') return 'badge-dr-late';
+  if(title.indexOf('Late')!==-1) return 'badge-late';
+  if(title==='Dr.'||title==='Prof.') return 'badge-dr';
+  if(title==='Mrs.') return 'badge-mrs';
+  if(title==='Miss') return 'badge-miss';
+  return 'badge-mr';
+}
+
+function calcGens(){
+  var ids=Object.keys(S.members);
+  if(!ids.length) return {};
+  var gens={}, childOf={}, spouseOf={}, parentOf={};
+
+  S.rels.forEach(function(r){
+    if(r.t==='parent'){ if(!childOf[r.to]) childOf[r.to]=[]; childOf[r.to].push(r.fr); }
+    if(r.t==='child'){ if(!childOf[r.fr]) childOf[r.fr]=[]; childOf[r.fr].push(r.to); }
+    if(r.t==='spouse'){ spouseOf[r.fr]=r.to; spouseOf[r.to]=r.fr; }
+    if(r.t==='parent'){ if(!parentOf[r.fr]) parentOf[r.fr]=[]; parentOf[r.fr].push(r.to); }
+    if(r.t==='child'){ if(!parentOf[r.to]) parentOf[r.to]=[]; parentOf[r.to].push(r.fr); }
   });
-  var roots = members.filter(function(id) {
-    return !parentOf[id] || parentOf[id].length === 0;
-  });
-  if (!roots.length) roots = [members[0]];
-  var queue = [];
-  roots.forEach(function(r) { gens[r] = 0; queue.push(r); });
-  var spouseOf = {};
-  state.relationships.forEach(function(r) {
-    if (r.type === 'spouse') {
-      spouseOf[r.from] = r.to;
-      spouseOf[r.to] = r.from;
-    }
-  });
-  var childOf = {};
-  state.relationships.forEach(function(r) {
-    if (r.type === 'parent') {
-      childOf[r.to] = childOf[r.to] || [];
-      childOf[r.to].push(r.from);
-    }
-    if (r.type === 'child') {
-      childOf[r.from] = childOf[r.from] || [];
-      childOf[r.from].push(r.to);
-    }
-  });
-  var visited = {};
-  queue.forEach(function(id) { visited[id] = true; });
-  var i = 0;
-  while (i < queue.length) {
-    var cur = queue[i++];
-    var g = gens[cur];
-    var spouse = spouseOf[cur];
-    if (spouse && gens[spouse] === undefined) { gens[spouse] = g; if (!visited[spouse]) { visited[spouse] = true; queue.push(spouse); } }
-    var children = childOf[cur] || [];
-    children.forEach(function(ch) {
-      if (gens[ch] === undefined) { gens[ch] = g + 1; if (!visited[ch]) { visited[ch] = true; queue.push(ch); } }
-    });
+
+  var roots=ids.filter(function(id){ return !childOf[id]||!childOf[id].length; });
+  if(!roots.length) roots=[ids[0]];
+
+  var queue=[], visited={};
+  roots.forEach(function(r){ if(gens[r]===undefined){ gens[r]=0; queue.push(r); visited[r]=true; } });
+
+  var i=0;
+  while(i<queue.length){
+    var cur=queue[i++]; var g=gens[cur];
+    var sp=spouseOf[cur];
+    if(sp!==undefined&&gens[sp]===undefined){ gens[sp]=g; if(!visited[sp]){ visited[sp]=true; queue.push(sp); } }
+    var ch=parentOf[cur]||[];
+    ch.forEach(function(c){ if(gens[c]===undefined){ gens[c]=g+1; if(!visited[c]){ visited[c]=true; queue.push(c); } } });
   }
-  members.forEach(function(id) { if (gens[id] === undefined) gens[id] = 0; });
+  ids.forEach(function(id){ if(gens[id]===undefined) gens[id]=0; });
   return gens;
 }
 
-function buildSpouseGroups(genMembers, spouseMap) {
-  var grouped = [];
-  var placed = {};
-  genMembers.forEach(function(id) {
-    if (placed[id]) return;
-    placed[id] = true;
-    var group = [id];
-    if (spouseMap[id] && genMembers.indexOf(spouseMap[id]) !== -1 && !placed[spouseMap[id]]) {
-      placed[spouseMap[id]] = true;
-      group.push(spouseMap[id]);
-    }
-    grouped.push(group);
+function spouseGroups(arr,spMap){
+  var res=[],placed={};
+  arr.forEach(function(id){
+    if(placed[id]) return; placed[id]=true;
+    var gr=[id]; var sp=spMap[id];
+    if(sp&&arr.indexOf(sp)!==-1&&!placed[sp]){ placed[sp]=true; gr.push(sp); }
+    res.push(gr);
   });
-  return grouped;
+  return res;
 }
 
-function renderTree() {
-  var canvas = document.getElementById('treeCanvas');
-  var svg = document.getElementById('svgOverlay');
-  var empty = document.getElementById('emptyState');
-  var members = Object.keys(state.members);
-  document.getElementById('statMembers').textContent = members.length;
-  updateMemberList();
-  var oldRows = canvas.querySelectorAll('.gen-row');
-  oldRows.forEach(function(r) { r.remove(); });
-  svg.innerHTML = '';
-  if (!members.length) { empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  var gens = calculateGenerations();
-  var genGroups = {};
-  members.forEach(function(id) {
-    var g = gens[id] !== undefined ? gens[id] : 0;
-    if (!genGroups[g]) genGroups[g] = [];
-    genGroups[g].push(id);
-  });
-  var genNums = Object.keys(genGroups).map(Number).sort(function(a,b){return a-b;});
-  document.getElementById('statGens').textContent = genNums.length;
-  var spouseMap = {};
-  state.relationships.forEach(function(r) {
-    if (r.type === 'spouse') { spouseMap[r.from] = r.to; spouseMap[r.to] = r.from; }
-  });
-  var cardPositions = {};
-  var query = state.searchQuery.toLowerCase();
-  genNums.forEach(function(gNum) {
-    var row = document.createElement('div');
-    row.className = 'gen-row';
-    row.dataset.gen = gNum;
-    var lbl = document.createElement('div');
-    lbl.className = 'gen-label';
-    lbl.textContent = 'Gen ' + (gNum + 1);
+function renderTree(){
+  var canvas=document.getElementById('treeCanvas');
+  var svg=document.getElementById('svgOverlay');
+  var empty=document.getElementById('emptyState');
+  var ids=Object.keys(S.members);
+
+  document.getElementById('statMembers').textContent=ids.length;
+  renderSidebar();
+  canvas.querySelectorAll('.gen-row').forEach(function(r){ r.remove(); });
+  svg.innerHTML='';
+
+  if(!ids.length){ empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  var gens=calcGens();
+  var byGen={};
+  ids.forEach(function(id){ var g=gens[id]!==undefined?gens[id]:0; if(!byGen[g]) byGen[g]=[]; byGen[g].push(id); });
+
+  var genNums=Object.keys(byGen).map(Number).sort(function(a,b){return a-b;});
+  document.getElementById('statGens').textContent=genNums.length;
+
+  var spMap={};
+  S.rels.forEach(function(r){ if(r.t==='spouse'){ spMap[r.fr]=r.to; spMap[r.to]=r.fr; } });
+
+  var q=S.q.toLowerCase();
+
+  genNums.forEach(function(g){
+    var row=document.createElement('div');
+    row.className='gen-row'; row.dataset.gen=g;
+    var lbl=document.createElement('div'); lbl.className='gen-label';
+    var lnum=document.createElement('div'); lnum.className='gen-label-num'; lnum.textContent=g+1;
+    var ltxt=document.createElement('span'); ltxt.textContent='Peedhi';
+    lbl.appendChild(lnum); lbl.appendChild(ltxt);
     row.appendChild(lbl);
     canvas.appendChild(row);
-    var groups = buildSpouseGroups(genGroups[gNum], spouseMap);
-    groups.forEach(function(group) {
-      if (group.length === 2) {
-        var cg = document.createElement('div');
-        cg.className = 'couple-group';
-        cg.appendChild(createCard(group[0], gens[group[0]], query));
-        var ml = document.createElement('div');
-        ml.className = 'marriage-line';
-        cg.appendChild(ml);
-        cg.appendChild(createCard(group[1], gens[group[1]], query));
+
+    var groups=spouseGroups(byGen[g],spMap);
+    groups.forEach(function(gr){
+      if(gr.length===2){
+        var cg=document.createElement('div'); cg.className='couple-group';
+        cg.appendChild(mkCard(gr[0],gens[gr[0]],q));
+        var mb=document.createElement('div'); mb.className='marriage-bar';
+        cg.appendChild(mb);
+        cg.appendChild(mkCard(gr[1],gens[gr[1]],q));
         row.appendChild(cg);
       } else {
-        row.appendChild(createCard(group[0], gens[group[0]], query));
+        row.appendChild(mkCard(gr[0],gens[gr[0]],q));
       }
     });
+
+    if(g<genNums[genNums.length-1]){
+      var orn=document.createElement('div'); orn.className='gen-ornament';
+      orn.textContent='&#x2606; &#x2605; &#x2606;';
+      row.appendChild(orn);
+    }
   });
-  requestAnimationFrame(function() {
-    var allCards = canvas.querySelectorAll('.member-card');
-    allCards.forEach(function(card) {
-      var rect = card.getBoundingClientRect();
-      var canvasRect = canvas.getBoundingClientRect();
-      cardPositions[card.dataset.id] = {
-        x: rect.left - canvasRect.left + rect.width / 2,
-        y: rect.top - canvasRect.top,
-        bottom: rect.top - canvasRect.top + rect.height,
-        w: rect.width,
-        h: rect.height
-      };
+
+  requestAnimationFrame(function(){
+    var pos={};
+    var canRect=canvas.getBoundingClientRect();
+    canvas.querySelectorAll('.member-card').forEach(function(card){
+      var r=card.getBoundingClientRect();
+      pos[card.dataset.id]={ x:r.left-canRect.left+r.width/2, y:r.top-canRect.top, bot:r.top-canRect.top+r.height };
     });
-    svg.setAttribute('width', canvas.scrollWidth);
-    svg.setAttribute('height', canvas.scrollHeight);
-    drawConnectors(svg, cardPositions, gens, spouseMap);
+    svg.setAttribute('width',canvas.scrollWidth);
+    svg.setAttribute('height',canvas.scrollHeight);
+    drawLines(svg,pos);
   });
 }
 
-function createCard(id, gen, query) {
-  var m = state.members[id];
-  var card = document.createElement('div');
-  card.className = 'member-card';
-  card.dataset.id = id;
-  if (state.selectedId === id) card.classList.add('selected');
-  if (query && m.name.toLowerCase().indexOf(query) === -1) card.classList.add('dim');
-  var img = document.createElement('img');
-  img.className = 'card-avatar';
-  img.src = m.img || DEFAULT_AVATAR;
-  img.alt = m.name;
-  img.onerror = function() { this.src = DEFAULT_AVATAR; };
-  var name = document.createElement('div');
-  name.className = 'card-name';
-  name.textContent = m.name;
-  var bio = document.createElement('div');
-  bio.className = 'card-bio';
-  bio.textContent = m.bio || 'No bio added';
-  var badge = document.createElement('div');
-  badge.className = 'card-gen-badge';
-  badge.textContent = 'Generation ' + (gen + 1);
-  var actions = document.createElement('div');
-  actions.className = 'card-actions';
-  var editBtn = document.createElement('button');
-  editBtn.className = 'card-btn card-btn-edit';
-  editBtn.title = 'Edit';
-  editBtn.innerHTML = '✎';
-  editBtn.onclick = function(e) { e.stopPropagation(); openEditMember(id); };
-  var delBtn = document.createElement('button');
-  delBtn.className = 'card-btn card-btn-del';
-  delBtn.title = 'Delete member';
-  delBtn.innerHTML = '✕';
-  delBtn.onclick = function(e) { e.stopPropagation(); deleteMember(id); };
-  actions.appendChild(editBtn);
-  actions.appendChild(delBtn);
-  card.appendChild(img);
-  card.appendChild(name);
-  card.appendChild(bio);
-  card.appendChild(badge);
-  card.appendChild(actions);
-  card.addEventListener('click', function() { selectMember(id); });
+function mkCard(id,gen,q){
+  var m=S.members[id]; if(!m) return document.createElement('div');
+  var late=isLate(m);
+  var card=document.createElement('div');
+  card.className='member-card'+(S.sel===id?' selected':'')+(q&&displayName(m).toLowerCase().indexOf(q)===-1?' dim':'')+(late?' late-member':'');
+  card.dataset.id=id;
+
+  var avWrap=document.createElement('div'); avWrap.className='card-avatar-wrap';
+  var img=document.createElement('img'); img.className='card-avatar';
+  img.src=m.img||DEFAULT_AVT; img.alt=displayName(m);
+  img.onerror=function(){ this.src=DEFAULT_AVT; };
+  avWrap.appendChild(img);
+  if(late){ var lr=document.createElement('div'); lr.className='late-ring'; avWrap.appendChild(lr); }
+
+  if(m.title){
+    var tb=document.createElement('div');
+    tb.className='card-title-badge '+titleBadgeClass(m.title);
+    tb.textContent=m.title;
+    avWrap.appendChild(tb);
+  }
+
+  var nm=document.createElement('div'); nm.className='card-name'; nm.textContent=m.name;
+  var bio=document.createElement('div'); bio.className='card-bio'; bio.textContent=m.bio||'Parichay nahi';
+  var badge=document.createElement('div'); badge.className='card-gen'; badge.textContent='Peedhi '+(gen+1);
+
+  var acts=document.createElement('div'); acts.className='card-actions';
+  var eb=document.createElement('button'); eb.className='card-btn card-btn-edit'; eb.innerHTML='&#9998;'; eb.title='Edit';
+  eb.onclick=function(e){ e.stopPropagation(); openEdit(id); };
+  var db=document.createElement('button'); db.className='card-btn card-btn-del'; db.innerHTML='&#x2715;'; db.title='Delete';
+  db.onclick=function(e){ e.stopPropagation(); delMember(id); };
+  acts.appendChild(eb); acts.appendChild(db);
+
+  card.appendChild(avWrap); card.appendChild(nm); card.appendChild(bio); card.appendChild(badge); card.appendChild(acts);
+  card.addEventListener('click',function(){ selectMember(id); });
   return card;
 }
 
-function drawConnectors(svg, positions, gens, spouseMap) {
-  var parentChildRels = [];
-  state.relationships.forEach(function(r) {
-    if (r.type === 'parent') parentChildRels.push({ parent: r.from, child: r.to });
-    if (r.type === 'child') parentChildRels.push({ parent: r.to, child: r.from });
-  });
-  parentChildRels.forEach(function(pc) {
-    var p = positions[pc.parent];
-    var c = positions[pc.child];
-    if (!p || !c) return;
-    var x1 = p.x;
-    var y1 = p.bottom;
-    var x2 = c.x;
-    var y2 = c.y;
-    var mid = (y1 + y2) / 2;
-    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M'+x1+','+y1+' C'+x1+','+mid+' '+x2+','+mid+' '+x2+','+y2);
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', 'rgba(232,184,109,0.4)');
-    path.setAttribute('stroke-width', '1.5');
-    path.setAttribute('stroke-dasharray', '4 3');
+function drawLines(svg,pos){
+  var done={};
+  S.rels.forEach(function(r){
+    var p=null,c=null;
+    if(r.t==='parent'){ p=pos[r.fr]; c=pos[r.to]; }
+    if(r.t==='child'){ p=pos[r.to]; c=pos[r.fr]; }
+    if(!p||!c) return;
+    var key=[r.fr,r.to].sort().join('-')+'p';
+    if(done[key]) return; done[key]=true;
+    var x1=p.x,y1=p.bot,x2=c.x,y2=c.y,mid=(y1+y2)/2;
+    var path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d','M'+x1+','+y1+' C'+x1+','+mid+' '+x2+','+mid+' '+x2+','+y2);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke','rgba(212,149,26,0.4)');
+    path.setAttribute('stroke-width','1.5');
+    path.setAttribute('stroke-dasharray','5 3');
     svg.appendChild(path);
-    var dot1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    dot1.setAttribute('cx', x2); dot1.setAttribute('cy', y2);
-    dot1.setAttribute('r', '3'); dot1.setAttribute('fill', 'rgba(232,184,109,0.6)');
-    svg.appendChild(dot1);
+    var dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    dot.setAttribute('cx',x2); dot.setAttribute('cy',y2); dot.setAttribute('r','3.5');
+    dot.setAttribute('fill','rgba(212,149,26,0.55)');
+    svg.appendChild(dot);
   });
 }
 
-function selectMember(id) {
-  state.selectedId = id;
-  renderTree();
-  openDetailPanel(id);
-}
+function selectMember(id){ S.sel=id; renderTree(); openDP(id); }
 
-function openDetailPanel(id) {
-  var m = state.members[id];
-  if (!m) return;
-  var panel = document.getElementById('detailPanel');
-  var inner = document.getElementById('detailPanelInner');
+function openDP(id){
+  var m=S.members[id]; if(!m) return;
+  var panel=document.getElementById('detailPanel');
+  var inner=document.getElementById('dpInner');
   panel.classList.add('open');
-  var myRels = state.relationships.filter(function(r) { return r.from === id || r.to === id; });
-  var parents = [], children = [], spouses = [], siblings = [];
-  myRels.forEach(function(r) {
-    if (r.type === 'parent' && r.from === id) children.push(r.to);
-    if (r.type === 'parent' && r.to === id) parents.push(r.from);
-    if (r.type === 'child' && r.from === id) parents.push(r.to);
-    if (r.type === 'child' && r.to === id) children.push(r.from);
-    if (r.type === 'spouse') { var other = r.from === id ? r.to : r.from; spouses.push(other); }
-    if (r.type === 'sibling') { var other2 = r.from === id ? r.to : r.from; siblings.push(other2); }
+  var late=isLate(m);
+  var parents=[],children=[],spouses=[],siblings=[];
+  S.rels.forEach(function(r){
+    if(r.t==='parent'&&r.fr===id) children.push(r.to);
+    if(r.t==='parent'&&r.to===id) parents.push(r.fr);
+    if(r.t==='child'&&r.fr===id) parents.push(r.to);
+    if(r.t==='child'&&r.to===id) children.push(r.fr);
+    if(r.t==='spouse'){ var o=r.fr===id?r.to:r.fr; spouses.push(o); }
+    if(r.t==='sibling'){ var o2=r.fr===id?r.to:r.fr; siblings.push(o2); }
   });
-  function makeChips(ids, type) {
-    if (!ids.length) return '<span style="font-size:.75rem;color:var(--text3)">None</span>';
-    return ids.map(function(rid) {
-      return '<span class="rel-chip rel-'+type+'">'
-        + getMemberName(rid)
-        + '<button class="rel-del" onclick="deleteRelationshipByMembers(\''+id+'\',\''+rid+'\',\''+type+'\')" title="Remove this relationship">✕</button>'
-        + '</span>';
+  function chips(ids,type){
+    if(!ids.length) return '<span style="font-size:.7rem;color:var(--text3)">Koi nahi</span>';
+    return ids.map(function(rid){
+      var rm=S.members[rid]; if(!rm) return '';
+      return '<span class="rel-chip rel-'+type+'">'+(displayName(rm))
+        +'<button class="rdel" onclick="delRel(\''+id+'\',\''+rid+'\',\''+type+'\')" title="Rishta hatao">&#x2715;</button></span>';
     }).join('');
   }
-  inner.innerHTML =
-    '<img class="dp-avatar" src="'+(m.img||DEFAULT_AVATAR)+'" onerror="this.src=\''+DEFAULT_AVATAR+'\'" alt="'+m.name+'">'
+  inner.innerHTML=
+    '<div class="dp-avatar-wrap">'
+    +'<img class="dp-avatar" src="'+(m.img||DEFAULT_AVT)+'" onerror="this.src=\''+DEFAULT_AVT+'\'" alt="">'
+    +(late?'<div class="dp-late-ring"></div>':'')
+    +'</div>'
+    +(m.title?'<div class="dp-title-badge">&#x2605; '+m.title+' &#x2605;</div>':'')
     +'<div class="dp-name">'+m.name+'</div>'
-    +'<div class="dp-bio">'+(m.bio||'No bio added')+'</div>'
-    +'<div class="dp-section"><h4>Parents</h4><div>'+makeChips(parents,'parent')+'</div></div>'
-    +'<div class="dp-section"><h4>Spouse</h4><div>'+makeChips(spouses,'spouse')+'</div></div>'
-    +'<div class="dp-section"><h4>Children</h4><div>'+makeChips(children,'child')+'</div></div>'
-    +'<div class="dp-section"><h4>Siblings</h4><div>'+makeChips(siblings,'sibling')+'</div></div>'
-    +'<div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">'
-    +'<button class="btn btn-ghost" style="font-size:.75rem" onclick="openEditMember(\''+id+'\')">✎ Edit</button>'
-    +'<button class="btn btn-danger" style="font-size:.75rem" onclick="deleteMember(\''+id+'\')">✕ Delete</button>'
+    +'<div class="dp-bio">'+(m.bio||'Koi parichay nahi')+'</div>'
+    +'<div class="dp-sec"><h4>&#x1F464; Mata-Pita (Parents)</h4>'+chips(parents,'parent')+'</div>'
+    +'<div class="dp-sec"><h4>&#x1F498; Jeevan Saathi (Spouse)</h4>'+chips(spouses,'spouse')+'</div>'
+    +'<div class="dp-sec"><h4>&#x1F476; Santaan (Children)</h4>'+chips(children,'child')+'</div>'
+    +'<div class="dp-sec"><h4>&#x1F91D; Bhai-Behen (Siblings)</h4>'+chips(siblings,'sibling')+'</div>'
+    +'<div style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap">'
+    +'<button class="btn btn-ghost" style="font-size:.71rem" onclick="openEdit(\''+id+'\')">&#9998; Badlav</button>'
+    +'<button class="btn btn-danger" style="font-size:.71rem" onclick="delMember(\''+id+'\')">&#x2715; Hatao</button>'
     +'</div>';
 }
 
-window.deleteRelationshipByMembers = function(id1, id2, type) {
-  var before = state.relationships.length;
-  state.relationships = state.relationships.filter(function(r) {
-    if (r.type === type) {
-      if ((r.from === id1 && r.to === id2) || (r.from === id2 && r.to === id1)) return false;
-    }
-    if (type === 'parent') {
-      if (r.type === 'child' && ((r.from === id2 && r.to === id1) || (r.from === id1 && r.to === id2))) return false;
-    }
-    if (type === 'child') {
-      if (r.type === 'parent' && ((r.from === id2 && r.to === id1) || (r.from === id1 && r.to === id2))) return false;
+window.delRel=function(a,b,type){
+  var before=S.rels.length;
+  S.rels=S.rels.filter(function(r){
+    if((r.fr===a&&r.to===b)||(r.fr===b&&r.to===a)){
+      if(r.t===type) return false;
+      if(type==='parent'&&r.t==='child') return false;
+      if(type==='child'&&r.t==='parent') return false;
     }
     return true;
   });
-  if (state.relationships.length < before) {
-    toast('Relationship removed', 'success');
-    saveToStorage();
-    renderTree();
-    openDetailPanel(id1);
-  }
+  if(S.rels.length<before){ toast('Rishta hata diya gaya','success'); save(); renderTree(); openDP(a); }
 };
 
-function deleteMember(id) {
-  if (!confirm('Delete ' + state.members[id].name + '? This will also remove all their relationships.')) return;
-  delete state.members[id];
-  state.relationships = state.relationships.filter(function(r) { return r.from !== id && r.to !== id; });
-  if (state.selectedId === id) {
-    state.selectedId = null;
-    document.getElementById('detailPanel').classList.remove('open');
-  }
-  saveToStorage();
-  renderTree();
-  toast('Member deleted', 'info');
+function delMember(id){
+  if(!confirm(displayName(S.members[id])+' ko hatana chahte hain? Unke sabhi rishte bhi hat jayenge.')) return;
+  delete S.members[id];
+  S.rels=S.rels.filter(function(r){ return r.fr!==id&&r.to!==id; });
+  if(S.sel===id){ S.sel=null; document.getElementById('detailPanel').classList.remove('open'); }
+  save(); renderTree(); toast('Sadasya hata diya gaya','info');
 }
 
-function updateMemberList() {
-  var list = document.getElementById('memberList');
-  list.innerHTML = '';
-  var members = Object.keys(state.members);
-  var query = state.searchQuery.toLowerCase();
-  members.forEach(function(id) {
-    var m = state.members[id];
-    if (query && m.name.toLowerCase().indexOf(query) === -1) return;
-    var item = document.createElement('div');
-    item.className = 'member-list-item' + (state.selectedId === id ? ' active' : '');
-    var img = document.createElement('img');
-    img.src = m.img || DEFAULT_AVATAR;
-    img.onerror = function() { this.src = DEFAULT_AVATAR; };
-    var info = document.createElement('div');
-    var nm = document.createElement('div');
-    nm.className = 'mlname';
-    nm.textContent = m.name;
-    var gn = document.createElement('div');
-    gn.className = 'mlgen';
-    gn.textContent = m.bio ? m.bio.substring(0, 30) + '…' : 'No bio';
-    info.appendChild(nm);
-    info.appendChild(gn);
-    item.appendChild(img);
-    item.appendChild(info);
-    item.addEventListener('click', function() { selectMember(id); });
+function renderSidebar(){
+  var list=document.getElementById('memberList'); list.innerHTML='';
+  var ids=Object.keys(S.members); var q=S.q.toLowerCase(); var shown=0;
+  ids.forEach(function(id){
+    var m=S.members[id];
+    if(q&&displayName(m).toLowerCase().indexOf(q)===-1) return;
+    shown++;
+    var item=document.createElement('div');
+    item.className='ml-item'+(S.sel===id?' active':'');
+    var img=document.createElement('img'); img.src=m.img||DEFAULT_AVT; img.onerror=function(){this.src=DEFAULT_AVT;};
+    var inf=document.createElement('div'); inf.style.overflow='hidden';
+    var nt=document.createElement('div'); nt.className='ml-title'; nt.textContent=m.title||'';
+    var nm=document.createElement('div'); nm.className='ml-name'; nm.textContent=m.name;
+    var sb=document.createElement('div'); sb.className='ml-sub'; sb.textContent=m.bio?m.bio.substring(0,26)+'…':'Parichay nahi';
+    if(m.title) inf.appendChild(nt);
+    inf.appendChild(nm); inf.appendChild(sb);
+    item.appendChild(img); item.appendChild(inf);
+    item.addEventListener('click',function(){ selectMember(id); });
     list.appendChild(item);
   });
-  if (!list.children.length) {
-    list.innerHTML = '<div style="padding:16px;font-size:.8rem;color:var(--text3);text-align:center">No members found</div>';
+  if(!shown) list.innerHTML='<div style="padding:14px;font-size:.76rem;color:var(--text3);text-align:center">Koi sadasya nahi mila</div>';
+}
+
+function buildOpts(excludeId){
+  return Object.keys(S.members).filter(function(id){ return id!==excludeId; }).map(function(id){
+    return '<option value="'+id+'">'+displayName(S.members[id])+'</option>';
+  }).join('');
+}
+
+function addRelRow(excludeId,tVal){
+  var rows=document.getElementById('relRows');
+  var opts=buildOpts(excludeId);
+  if(!opts){ toast('Pehle aur sadasya jodein','info'); return; }
+  var div=document.createElement('div'); div.className='rel-row';
+  div.innerHTML=
+    '<select class="rtype">'
+    +'<option value="child" '+(tVal==='child'?'selected':'')+'>Ki santaan hain (Child of)</option>'
+    +'<option value="parent" '+(tVal==='parent'?'selected':'')+'>Ke mata-pita hain (Parent of)</option>'
+    +'<option value="spouse" '+(tVal==='spouse'?'selected':'')+'>Jeevan saathi hain (Spouse of)</option>'
+    +'<option value="sibling" '+(tVal==='sibling'?'selected':'')+'>Bhai/Behen hain (Sibling of)</option>'
+    +'</select>'
+    +'<select class="rperson">'+opts+'</select>'
+    +'<button class="btn-rm-row" onclick="this.parentElement.remove()">&#x2715;</button>';
+  rows.appendChild(div);
+}
+
+function openAdd(){
+  S.editId=null;
+  document.getElementById('modalTitle').innerHTML='&#x1F33A; Naya Sadasyata Jodein';
+  document.getElementById('fTitle').value='Mr.';
+  document.getElementById('fName').value='';
+  document.getElementById('fBio').value='';
+  document.getElementById('fImg').value='';
+  document.getElementById('avatarPrev').src=DEFAULT_AVT;
+  document.getElementById('relRows').innerHTML='';
+  var hasMems=Object.keys(S.members).length>0;
+  document.getElementById('relSection').style.display=hasMems?'block':'none';
+  if(hasMems) addRelRow(null,'child');
+  document.getElementById('overlayMember').classList.add('show');
+  setTimeout(function(){ document.getElementById('fName').focus(); },100);
+}
+
+function openEdit(id){
+  S.editId=id; var m=S.members[id];
+  document.getElementById('modalTitle').innerHTML='&#9998; Badlav Karein';
+  document.getElementById('fTitle').value=m.title||'';
+  document.getElementById('fName').value=m.name;
+  document.getElementById('fBio').value=m.bio||'';
+  document.getElementById('fImg').value=m.img||'';
+  document.getElementById('avatarPrev').src=m.img||DEFAULT_AVT;
+  document.getElementById('relRows').innerHTML='';
+  document.getElementById('relSection').style.display='none';
+  document.getElementById('overlayMember').classList.add('show');
+}
+
+function closeModal(){ document.getElementById('overlayMember').classList.remove('show'); }
+
+function saveMember(){
+  var title=document.getElementById('fTitle').value;
+  var nm=document.getElementById('fName').value.trim();
+  var bio=document.getElementById('fBio').value.trim();
+  var img=document.getElementById('fImg').value.trim();
+  if(!nm){ toast('Naam zaroori hai!','error'); return; }
+
+  if(S.editId){
+    S.members[S.editId].title=title; S.members[S.editId].name=nm;
+    S.members[S.editId].bio=bio; S.members[S.editId].img=img;
+    toast('Badlav safal raha','success');
+    closeModal(); save(); renderTree();
+    if(S.sel===S.editId) openDP(S.editId);
+    return;
   }
-}
 
-function populateSelects() {
-  var from = document.getElementById('relFrom');
-  var to = document.getElementById('relTo');
-  from.innerHTML = '';
-  to.innerHTML = '';
-  Object.keys(state.members).forEach(function(id) {
-    var opt1 = document.createElement('option');
-    opt1.value = id;
-    opt1.textContent = state.members[id].name;
-    from.appendChild(opt1);
-    var opt2 = document.createElement('option');
-    opt2.value = id;
-    opt2.textContent = state.members[id].name;
-    to.appendChild(opt2);
+  var id=uid();
+  S.members[id]={ title:title, name:nm, bio:bio, img:img };
+
+  var rows=document.getElementById('relRows').querySelectorAll('.rel-row');
+  var added=0;
+  rows.forEach(function(row){
+    var type=row.querySelector('.rtype').value;
+    var other=row.querySelector('.rperson').value;
+    if(!other||!S.members[other]) return;
+    if(type==='child') S.rels.push({fr:other,to:id,t:'parent'});
+    else if(type==='parent') S.rels.push({fr:id,to:other,t:'parent'});
+    else if(type==='spouse') S.rels.push({fr:id,to:other,t:'spouse'});
+    else if(type==='sibling') S.rels.push({fr:id,to:other,t:'sibling'});
+    added++;
   });
+
+  toast((title?title+' ':'')+nm+' jod diya gaya'+(added?' ('+added+' rishte)':''),'success');
+  closeModal(); save(); renderTree();
+  S.sel=id; selectMember(id);
 }
 
-function openAddMember() {
-  state.editingId = null;
-  document.getElementById('modalMemberTitle').textContent = 'Add New Member';
-  document.getElementById('memberName').value = '';
-  document.getElementById('memberBio').value = '';
-  document.getElementById('memberImg').value = '';
-  document.getElementById('avatarPreview').src = DEFAULT_AVATAR;
-  document.getElementById('modalMember').classList.add('show');
-  document.getElementById('memberName').focus();
+function exportJSON(){
+  var blob=new Blob([JSON.stringify({members:S.members,rels:S.rels,nid:S.nid},null,2)],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='tripathi-parivar.json'; a.click();
+  URL.revokeObjectURL(url); toast('File download ho rahi hai','success');
 }
 
-function openEditMember(id) {
-  var m = state.members[id];
-  state.editingId = id;
-  document.getElementById('modalMemberTitle').textContent = 'Edit Member';
-  document.getElementById('memberName').value = m.name;
-  document.getElementById('memberBio').value = m.bio || '';
-  document.getElementById('memberImg').value = m.img || '';
-  document.getElementById('avatarPreview').src = m.img || DEFAULT_AVATAR;
-  document.getElementById('modalMember').classList.add('show');
-}
-
-function saveMember() {
-  var name = document.getElementById('memberName').value.trim();
-  var bio = document.getElementById('memberBio').value.trim();
-  var img = document.getElementById('memberImg').value.trim();
-  if (!name) { toast('Name is required', 'error'); return; }
-  if (state.editingId) {
-    state.members[state.editingId].name = name;
-    state.members[state.editingId].bio = bio;
-    state.members[state.editingId].img = img;
-    toast('Member updated', 'success');
-  } else {
-    var id = uid();
-    state.members[id] = { name: name, bio: bio, img: img };
-    toast('Member added: ' + name, 'success');
-  }
-  document.getElementById('modalMember').classList.remove('show');
-  saveToStorage();
-  renderTree();
-}
-
-function openAddRel() {
-  if (Object.keys(state.members).length < 2) { toast('Add at least 2 members first', 'error'); return; }
-  populateSelects();
-  document.getElementById('modalRel').classList.add('show');
-}
-
-function saveRel() {
-  var from = document.getElementById('relFrom').value;
-  var to = document.getElementById('relTo').value;
-  var type = document.getElementById('relType').value;
-  if (from === to) { toast('Cannot relate a member to themselves', 'error'); return; }
-  var exists = state.relationships.some(function(r) {
-    return r.type === type && ((r.from === from && r.to === to) || (r.from === to && r.to === from));
-  });
-  if (exists) { toast('This relationship already exists', 'error'); return; }
-  state.relationships.push({ from: from, to: to, type: type });
-  toast('Relationship added', 'success');
-  document.getElementById('modalRel').classList.remove('show');
-  saveToStorage();
-  renderTree();
-  if (state.selectedId) openDetailPanel(state.selectedId);
-}
-
-function exportJSON() {
-  var data = { members: state.members, relationships: state.relationships, nextId: state.nextId };
-  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url; a.download = 'tripathi-family-tree.json'; a.click();
-  URL.revokeObjectURL(url);
-  toast('Exported successfully', 'success');
-}
-
-function importJSON(file) {
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      var data = JSON.parse(e.target.result);
-      if (!data.members) throw new Error('Invalid file');
-      state.members = data.members;
-      state.relationships = data.relationships || [];
-      state.nextId = data.nextId || 1;
-      state.selectedId = null;
+function importJSON(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var d=JSON.parse(e.target.result);
+      if(!d.members) throw new Error('bad');
+      S.members=d.members; S.rels=d.rels||[]; S.nid=d.nid||1; S.sel=null;
       document.getElementById('detailPanel').classList.remove('open');
-      saveToStorage();
-      renderTree();
-      toast('Imported ' + Object.keys(state.members).length + ' members', 'success');
-    } catch(err) {
-      toast('Invalid JSON file', 'error');
-    }
+      save(); renderTree(); toast(Object.keys(S.members).length+' sadasya import hue','success');
+    }catch(err){ toast('File sahi nahi hai','error'); }
   };
   reader.readAsText(file);
 }
 
-var zoomScale = 1;
-function setZoom(z) {
-  zoomScale = Math.min(2, Math.max(0.3, z));
-  document.getElementById('treeCanvas').style.transform = 'scale(' + zoomScale + ')';
-  document.getElementById('treeCanvas').style.transformOrigin = 'top left';
-  document.getElementById('zoomLevel').textContent = Math.round(zoomScale * 100) + '%';
+var zs=1;
+function setZoom(z){
+  zs=Math.min(2.5,Math.max(0.3,z));
+  document.getElementById('treeCanvas').style.transform='scale('+zs+')';
+  document.getElementById('zlvl').textContent=Math.round(zs*100)+'%';
 }
 
-var resizeTimer;
-function onResize() {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(function() { renderTree(); }, 200);
-}
+document.getElementById('btnAdd').addEventListener('click',openAdd);
+document.getElementById('cancelMember').addEventListener('click',closeModal);
+document.getElementById('saveMember').addEventListener('click',saveMember);
+document.getElementById('btnAddRelRow').addEventListener('click',function(){ addRelRow(S.editId); });
+document.getElementById('btnExport').addEventListener('click',exportJSON);
+document.getElementById('importFile').addEventListener('change',function(e){ if(e.target.files[0]){ importJSON(e.target.files[0]); e.target.value=''; } });
+document.getElementById('dpClose').addEventListener('click',function(){ document.getElementById('detailPanel').classList.remove('open'); S.sel=null; renderTree(); });
+document.getElementById('btnSidebar').addEventListener('click',function(){ document.getElementById('sidebar').classList.toggle('collapsed'); });
+document.getElementById('btnTheme').addEventListener('click',function(){ document.body.classList.toggle('light'); localStorage.setItem('tfTheme',document.body.classList.contains('light')?'light':'dark'); });
+document.getElementById('zIn').addEventListener('click',function(){ setZoom(zs+0.1); });
+document.getElementById('zOut').addEventListener('click',function(){ setZoom(zs-0.1); });
+document.getElementById('zReset').addEventListener('click',function(){ setZoom(1); });
+document.getElementById('fImg').addEventListener('input',function(){ document.getElementById('avatarPrev').src=this.value.trim()||DEFAULT_AVT; });
+document.getElementById('avatarPrev').addEventListener('error',function(){ this.src=DEFAULT_AVT; });
 
-document.getElementById('btnAddMember').addEventListener('click', openAddMember);
-document.getElementById('btnAddRel').addEventListener('click', openAddRel);
-document.getElementById('cancelMember').addEventListener('click', function() { document.getElementById('modalMember').classList.remove('show'); });
-document.getElementById('cancelRel').addEventListener('click', function() { document.getElementById('modalRel').classList.remove('show'); });
-document.getElementById('saveMember').addEventListener('click', saveMember);
-document.getElementById('saveRel').addEventListener('click', saveRel);
-document.getElementById('btnExport').addEventListener('click', exportJSON);
-document.getElementById('importInput').addEventListener('change', function(e) { if (e.target.files[0]) { importJSON(e.target.files[0]); e.target.value = ''; } });
-document.getElementById('dpClose').addEventListener('click', function() { document.getElementById('detailPanel').classList.remove('open'); state.selectedId = null; renderTree(); });
-document.getElementById('zoomIn').addEventListener('click', function() { setZoom(zoomScale + 0.1); });
-document.getElementById('zoomOut').addEventListener('click', function() { setZoom(zoomScale - 0.1); });
-document.getElementById('zoomReset').addEventListener('click', function() { setZoom(1); });
-document.getElementById('btnDark').addEventListener('click', function() {
-  document.body.classList.toggle('light');
-  localStorage.setItem('ftTheme', document.body.classList.contains('light') ? 'light' : 'dark');
+var st;
+document.getElementById('searchInput').addEventListener('input',function(){
+  clearTimeout(st); var v=this.value; st=setTimeout(function(){ S.q=v; renderTree(); },250);
 });
-document.getElementById('memberImg').addEventListener('input', function() {
-  var v = this.value.trim();
-  document.getElementById('avatarPreview').src = v || DEFAULT_AVATAR;
+document.getElementById('overlayMember').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closeModal();
+  if(e.key==='Enter'&&document.getElementById('overlayMember').classList.contains('show')) saveMember();
 });
-document.getElementById('avatarPreview').addEventListener('error', function() { this.src = DEFAULT_AVATAR; });
+var rt;
+window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(renderTree,200); });
 
-var searchTimer;
-document.getElementById('searchInput').addEventListener('input', function() {
-  clearTimeout(searchTimer);
-  var q = this.value;
-  searchTimer = setTimeout(function() {
-    state.searchQuery = q;
-    renderTree();
-  }, 250);
-});
+if(localStorage.getItem('tfTheme')==='light') document.body.classList.add('light');
+load();
 
-document.getElementById('sidebarToggle').addEventListener('click', function() {
-  document.getElementById('sidebar').classList.toggle('collapsed');
-});
+if(!Object.keys(S.members).length){
+  var gf=uid(); S.members[gf]={title:'Late Dr.',name:'Shrwan Kumar Tripathi',bio:'Principal, Degree College. Swargiya.',img:''};
+  var fa=uid(); S.members[fa]={title:'Mr.',name:'Rangeshwar Nath Tripathi',bio:'Vyavsayi (Businessman), Jaunpur',img:''};
+  var mo=uid(); S.members[mo]={title:'Mrs.',name:'Archana Tripathi',bio:'Grihini (Homemaker)',img:''};
+  var me=uid(); S.members[me]={title:'Mr.',name:'Ishan Tripathi',bio:'MCA Student, Web Developer',img:''};
+  var br=uid(); S.members[br]={title:'Mr.',name:'Ayush Tripathi',bio:'Gurukul mein adhyayan',img:''};
 
-document.getElementById('modalMember').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
-document.getElementById('modalRel').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
-
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    document.getElementById('modalMember').classList.remove('show');
-    document.getElementById('modalRel').classList.remove('show');
-  }
-  if (e.key === 'Enter' && document.getElementById('modalMember').classList.contains('show')) saveMember();
-  if (e.key === 'Enter' && document.getElementById('modalRel').classList.contains('show')) saveRel();
-});
-
-window.addEventListener('resize', onResize);
-
-if (localStorage.getItem('ftTheme') === 'light') document.body.classList.add('light');
-
-loadFromStorage();
-
-if (!Object.keys(state.members).length) {
-  // 1. Define Family Members
-  var id1 = uid(); state.members[id1] = { name: 'Late Dr. Shrawan Kumar Tripathi', bio: 'Grandfather. Was principal of a degree college.', img: '' };
-  var id2 = uid(); state.members[id2] = { name: 'Shanti Tripathi', bio: 'Grandmother. Homemaker.', img: '' };
-  var id3 = uid(); state.members[id3] = { name: 'Rangeshwar Nath Tripathi', bio: 'Father. Tour and travels agency owner.', img: '' };
-  var id4 = uid(); state.members[id4] = { name: 'Archana Tripathi', bio: 'Mother. Homemaker.', img: '' };
-  var id5 = uid(); state.members[id5] = { name: 'Ishan Tripathi', bio: 'MCA student.', img: '' };
-  var id6 = uid(); state.members[id6] = { name: 'Ayush Tripathi', bio: 'Brother. Currently passed 12th from Gurukul, studied Vedic knowledge.', img: '' };
-
-  // 2. Define Relationships
-  // Grandparents
-  state.relationships.push({ from: id1, to: id2, type: 'spouse' });
-  state.relationships.push({ from: id1, to: id3, type: 'parent' }); // Grandfather to Father
-  state.relationships.push({ from: id2, to: id3, type: 'parent' }); // Grandmother to Father
-
-  // Parents
-  state.relationships.push({ from: id3, to: id4, type: 'spouse' });
-  
-  // Children (Ishan & Ayush)
-  state.relationships.push({ from: id3, to: id5, type: 'parent' }); // Father to Ishan
-  state.relationships.push({ from: id4, to: id5, type: 'parent' }); // Mother to Ishan
-  
-  state.relationships.push({ from: id3, to: id6, type: 'parent' }); // Father to Ayush
-  state.relationships.push({ from: id4, to: id6, type: 'parent' }); // Mother to Ayush
-
-  // Siblings
-  state.relationships.push({ from: id5, to: id6, type: 'sibling' }); // Ishan and Ayush
-
-  saveToStorage();
+  S.rels.push({fr:fa,to:mo,t:'spouse'});
+  S.rels.push({fr:gf,to:fa,t:'parent'});
+  S.rels.push({fr:fa,to:me,t:'parent'});
+  S.rels.push({fr:mo,to:me,t:'parent'});
+  S.rels.push({fr:fa,to:br,t:'parent'});
+  S.rels.push({fr:mo,to:br,t:'parent'});
+  S.rels.push({fr:me,to:br,t:'sibling'});
+  save();
 }
 
 renderTree();
 </script>
 </body>
 </html>
-
