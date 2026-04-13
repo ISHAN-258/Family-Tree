@@ -1066,17 +1066,33 @@ if (localStorage.getItem('ftTheme') === 'light') document.body.classList.add('li
 loadFromStorage();
 
 if (!Object.keys(state.members).length) {
-  var id1 = uid(); state.members[id1] = { name: 'Ramesh Tripathi', bio: 'Patriarch of the family, born 1948, Jaunpur', img: '' };
-  var id2 = uid(); state.members[id2] = { name: 'Savitri Tripathi', bio: 'Matriarch, homemaker, born 1952', img: '' };
-  var id3 = uid(); state.members[id3] = { name: 'Arun Tripathi', bio: 'Son, software engineer, born 1978', img: '' };
-  var id4 = uid(); state.members[id4] = { name: 'Priya Tripathi', bio: 'Daughter-in-law, teacher, born 1980', img: '' };
-  var id5 = uid(); state.members[id5] = { name: 'Ishan Tripathi', bio: 'Grandson, BCA Graduate, web developer', img: '' };
+  // 1. Define Family Members
+  var id1 = uid(); state.members[id1] = { name: 'Late Dr. Shrawan Kumar Tripathi', bio: 'Grandfather. Was principal of a degree college.', img: '' };
+  var id2 = uid(); state.members[id2] = { name: 'Shanti Tripathi', bio: 'Grandmother. Homemaker.', img: '' };
+  var id3 = uid(); state.members[id3] = { name: 'Rangeshwar Nath Tripathi', bio: 'Father. Tour and travels agency owner.', img: '' };
+  var id4 = uid(); state.members[id4] = { name: 'Archana Tripathi', bio: 'Mother. Homemaker.', img: '' };
+  var id5 = uid(); state.members[id5] = { name: 'Ishan Tripathi', bio: 'MCA student.', img: '' };
+  var id6 = uid(); state.members[id6] = { name: 'Ayush Tripathi', bio: 'Brother. Currently passed 12th from Gurukul, studied Vedic knowledge.', img: '' };
+
+  // 2. Define Relationships
+  // Grandparents
   state.relationships.push({ from: id1, to: id2, type: 'spouse' });
-  state.relationships.push({ from: id1, to: id3, type: 'parent' });
-  state.relationships.push({ from: id2, to: id3, type: 'parent' });
+  state.relationships.push({ from: id1, to: id3, type: 'parent' }); // Grandfather to Father
+  state.relationships.push({ from: id2, to: id3, type: 'parent' }); // Grandmother to Father
+
+  // Parents
   state.relationships.push({ from: id3, to: id4, type: 'spouse' });
-  state.relationships.push({ from: id3, to: id5, type: 'parent' });
-  state.relationships.push({ from: id4, to: id5, type: 'parent' });
+  
+  // Children (Ishan & Ayush)
+  state.relationships.push({ from: id3, to: id5, type: 'parent' }); // Father to Ishan
+  state.relationships.push({ from: id4, to: id5, type: 'parent' }); // Mother to Ishan
+  
+  state.relationships.push({ from: id3, to: id6, type: 'parent' }); // Father to Ayush
+  state.relationships.push({ from: id4, to: id6, type: 'parent' }); // Mother to Ayush
+
+  // Siblings
+  state.relationships.push({ from: id5, to: id6, type: 'sibling' }); // Ishan and Ayush
+
   saveToStorage();
 }
 
