@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tripathi Family Tree</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0f13;
+  --surface:#1a1a24;
+  --surface2:#22222f;
+  --border:#2e2e40;
+  --accent:#e8b86d;
+  --accent2:#c8956a;
+  --text:#f0ede8;
+  --text2:#9e9bb5;
+  --text3:#6e6b82;
+  --red:#e05c5c;
+  --green:#5cb85c;
+  --blue:#5b9bd5;
+  --shadow:0 8px 32px rgba(0,0,0,0.4);
+  --radius:14px;
+  --fs:'Poppins',sans-serif;
+  --fd:'Playfair Display',serif;
+  --card-w:200px;
+  --card-h:240px;
+}
+.light{
+  --bg:#f5f2eb;
+  --surface:#ffffff;
+  --surface2:#f0ede5;
+  --border:#ddd8cc;
+  --text:#1a1814;
+  --text2:#5a5650;
+  --text3:#9a9690;
+  --shadow:0 8px 32px rgba(0,0,0,0.1);
+}
+html,body{height:100%;font-family:var(--fs);background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+body{display:flex;flex-direction:column;overflow:hidden}
+
+/* TOPBAR */
+.topbar{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 20px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;z-index:100;
+  flex-wrap:wrap;
+}
+.topbar-title{
+  font-family:var(--fd);font-size:1.3rem;font-weight:700;
+  color:var(--accent);white-space:nowrap;margin-right:4px;
+}
+.topbar-title span{color:var(--text);font-weight:400;font-size:.85rem;font-family:var(--fs)}
+.search-wrap{position:relative;flex:1;min-width:160px;max-width:280px}
+.search-wrap input{
+  width:100%;padding:8px 12px 8px 36px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:30px;color:var(--text);font-family:var(--fs);font-size:.82rem;
+  outline:none;transition:border .2s;
+}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:.4}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border:none;border-radius:8px;
+  font-family:var(--fs);font-size:.8rem;font-weight:500;
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.btn-primary{background:var(--accent);color:#1a1814}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{opacity:.85}
+.btn-icon{padding:8px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.btn-icon:hover{border-color:var(--accent);color:var(--accent)}
+.stat-chip{
+  padding:6px 12px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:20px;font-size:.75rem;color:var(--text2);white-space:nowrap;
+}
+.stat-chip b{color:var(--accent)}
+
+/* MAIN LAYOUT */
+.main{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{
+  width:260px;flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:width .3s;
+}
+.sidebar.collapsed{width:0;border:none}
+.sidebar-inner{min-width:260px;display:flex;flex-direction:column;height:100%;overflow-y:auto}
+.sidebar-section{padding:14px 16px;border-bottom:1px solid var(--border)}
+.sidebar-section h3{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:12px}
+.member-list{display:flex;flex-direction:column;gap:6px;flex:1;overflow-y:auto;padding:12px}
+.member-list-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:10px;
+  background:var(--surface2);border:1px solid transparent;
+  cursor:pointer;transition:all .2s;
+}
+.member-list-item:hover{border-color:var(--accent)}
+.member-list-item.active{border-color:var(--accent);background:rgba(232,184,109,.08)}
+.member-list-item img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.member-list-item .mlname{font-size:.82rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.member-list-item .mlgen{font-size:.7rem;color:var(--text3)}
+
+/* CANVAS */
+.canvas-wrap{
+  flex:1;overflow:auto;position:relative;
+  background:var(--bg);
+}
+.canvas-wrap::-webkit-scrollbar{width:6px;height:6px}
+.canvas-wrap::-webkit-scrollbar-track{background:transparent}
+.canvas-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.tree-canvas{
+  position:relative;min-width:100%;min-height:100%;
+  padding:60px 40px 100px;
+}
+.gen-row{
+  display:flex;align-items:flex-start;justify-content:center;
+  gap:40px;flex-wrap:wrap;
+  margin-bottom:100px;position:relative;
+}
+.gen-label{
+  position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  font-size:.7rem;text-transform:uppercase;letter-spacing:2px;
+  color:var(--text3);writing-mode:vertical-rl;
+  text-orientation:mixed;user-select:none;
+}
+.couple-group{display:flex;align-items:flex-start;gap:0;position:relative}
+.marriage-line{
+  width:32px;height:2px;background:var(--accent);
+  align-self:70px;margin-top:68px;flex-shrink:0;position:relative;
+}
+.marriage-line::after{
+  content:'♥';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:.7rem;color:var(--accent);
+  background:var(--bg);padding:0 3px;
+}
+
+/* MEMBER CARD */
+.member-card{
+  width:var(--card-w);flex-shrink:0;
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px 14px 14px;
+  display:flex;flex-direction:column;align-items:center;
+  cursor:pointer;transition:all .3s;
+  position:relative;
+  box-shadow:var(--shadow);
+}
+.member-card:hover{
+  border-color:var(--accent);
+  transform:translateY(-4px);
+  box-shadow:0 16px 40px rgba(0,0,0,.5),0 0 0 1px var(--accent);
+}
+.member-card.selected{border-color:var(--accent);background:rgba(232,184,109,.06)}
+.member-card.dim{opacity:.35}
+.card-avatar{
+  width:72px;height:72px;border-radius:50%;
+  object-fit:cover;border:2.5px solid var(--border);
+  margin-bottom:10px;transition:border .2s;
+}
+.member-card:hover .card-avatar{border-color:var(--accent)}
+.card-name{
+  font-size:.88rem;font-weight:600;text-align:center;
+  margin-bottom:4px;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:100%;
+}
+.card-bio{
+  font-size:.72rem;color:var(--text2);text-align:center;
+  line-height:1.4;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  margin-bottom:8px;
+}
+.card-gen-badge{
+  font-size:.65rem;padding:2px 8px;border-radius:10px;
+  background:rgba(232,184,109,.15);color:var(--accent);
+  font-weight:500;
+}
+.card-actions{
+  position:absolute;top:6px;right:6px;
+  display:flex;gap:4px;opacity:0;transition:opacity .2s;
+}
+.member-card:hover .card-actions{opacity:1}
+.card-btn{
+  width:24px;height:24px;border-radius:6px;border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.7rem;transition:all .2s;
+}
+.card-btn-del{background:rgba(224,92,92,.2);color:var(--red)}
+.card-btn-del:hover{background:var(--red);color:#fff}
+.card-btn-edit{background:rgba(91,155,213,.2);color:var(--blue)}
+.card-btn-edit:hover{background:var(--blue);color:#fff}
+
+/* SVG CONNECTORS */
+.svg-overlay{
+  position:absolute;top:0;left:0;
+  pointer-events:none;overflow:visible;
+}
+
+/* EMPTY STATE */
+.empty-state{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;pointer-events:none;
+}
+.empty-state svg{opacity:.15;margin-bottom:20px}
+.empty-state h2{font-family:var(--fd);font-size:1.8rem;color:var(--text2);margin-bottom:8px}
+.empty-state p{font-size:.85rem;color:var(--text3)}
+
+/* DETAIL PANEL */
+.detail-panel{
+  width:300px;flex-shrink:0;
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transform:translateX(100%);
+  transition:transform .3s,width .3s;
+  position:relative;
+}
+.detail-panel.open{transform:translateX(0)}
+.detail-panel-inner{padding:20px;overflow-y:auto;flex:1}
+.dp-avatar{
+  width:80px;height:80px;border-radius:50%;
+  object-fit:cover;border:2px solid var(--accent);
+  margin:0 auto 12px;display:block;
+}
+.dp-name{
+  font-family:var(--fd);font-size:1.2rem;
+  text-align:center;margin-bottom:4px;
+}
+.dp-bio{
+  font-size:.8rem;color:var(--text2);text-align:center;
+  margin-bottom:16px;line-height:1.5;
+}
+.dp-section{margin-bottom:16px}
+.dp-section h4{
+  font-size:.68rem;text-transform:uppercase;letter-spacing:2px;
+  color:var(--text3);margin-bottom:8px;
+}
+.rel-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 10px;border-radius:20px;font-size:.75rem;
+  margin:3px;background:var(--surface2);border:1px solid var(--border);
+  transition:border .2s;cursor:default;
+}
+.rel-chip .rel-del{
+  width:14px;height:14px;border-radius:50%;border:none;
+  background:rgba(224,92,92,.3);color:var(--red);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.6rem;transition:all .2s;padding:0;
+  line-height:1;
+}
+.rel-chip .rel-del:hover{background:var(--red);color:#fff}
+.rel-parent{border-color:rgba(91,155,213,.4);color:var(--blue)}
+.rel-child{border-color:rgba(92,184,92,.4);color:var(--green)}
+.rel-spouse{border-color:rgba(232,184,109,.4);color:var(--accent)}
+.rel-sibling{border-color:rgba(180,120,220,.4);color:#b478dc}
+.dp-close{
+  position:absolute;top:12px;right:12px;
+  width:28px;height:28px;border-radius:50%;
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;transition:all .2s;
+}
+.dp-close:hover{border-color:var(--red);color:var(--red)}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  backdrop-filter:blur(6px);z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:18px;padding:28px;width:90%;max-width:440px;
+  box-shadow:0 24px 80px rgba(0,0,0,.5);
+  transform:scale(.95);transition:transform .25s;
+}
+.modal-overlay.show .modal{transform:scale(1)}
+.modal h2{
+  font-family:var(--fd);font-size:1.3rem;
+  margin-bottom:20px;color:var(--accent);
+}
+.form-group{margin-bottom:14px}
+.form-group label{
+  display:block;font-size:.75rem;font-weight:500;
+  color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea{
+  width:100%;padding:10px 12px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;color:var(--text);
+  font-family:var(--fs);font-size:.85rem;
+  outline:none;transition:border .2s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{border-color:var(--accent)}
+.form-group textarea{resize:vertical;min-height:70px}
+.form-group select option{background:var(--surface)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.avatar-preview{
+  width:60px;height:60px;border-radius:50%;
+  object-fit:cover;border:2px solid var(--border);
+  margin-bottom:8px;
+}
+.avatar-preview-wrap{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+
+/* TOAST */
+.toast-wrap{
+  position:fixed;bottom:24px;right:24px;
+  display:flex;flex-direction:column;gap:8px;z-index:999;
+}
+.toast{
+  padding:10px 16px;border-radius:10px;font-size:.82rem;
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:var(--shadow);color:var(--text);
+  animation:toastIn .3s ease;
+  display:flex;align-items:center;gap:8px;
+  max-width:280px;
+}
+.toast.success{border-color:var(--green);color:var(--green)}
+.toast.error{border-color:var(--red);color:var(--red)}
+.toast.info{border-color:var(--accent);color:var(--accent)}
+@keyframes toastIn{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{position:absolute;z-index:200;height:100%;box-shadow:var(--shadow)}
+  .sidebar.collapsed{width:0}
+  .detail-panel{position:absolute;right:0;z-index:200;height:100%;box-shadow:var(--shadow)}
+  .stat-chip{display:none}
+  .topbar-title span{display:none}
+}
+
+.zoom-controls{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  display:flex;gap:8px;z-index:100;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:30px;padding:6px 10px;box-shadow:var(--shadow);
+}
+.zoom-btn{
+  width:32px;height:32px;border-radius:50%;border:none;
+  background:var(--surface2);color:var(--text);
+  cursor:pointer;font-size:1rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.zoom-btn:hover{background:var(--accent);color:#1a1814}
+.zoom-level{font-size:.78rem;color:var(--text2);padding:0 4px;align-self:center;min-width:38px;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <button class="btn-icon" id="sidebarToggle" title="Toggle member list">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="topbar-title">Tripathi Family Tree <span>v1.0</span></div>
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="Search member...">
+  </div>
+  <div class="stat-chip">Members: <b id="statMembers">0</b></div>
+  <div class="stat-chip">Generations: <b id="statGens">0</b></div>
+  <button class="btn btn-primary" id="btnAddMember">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add Member
+  </button>
+  <button class="btn btn-ghost" id="btnAddRel">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Add Relation
+  </button>
+  <button class="btn btn-ghost" id="btnExport">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Export
+  </button>
+  <label class="btn btn-ghost" style="cursor:pointer">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Import
+    <input type="file" id="importInput" accept=".json" style="display:none">
+  </label>
+  <button class="btn-icon" id="btnDark" title="Toggle dark mode">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+      <div class="sidebar-section">
+        <h3>All Members</h3>
+      </div>
+      <div class="member-list" id="memberList"></div>
+    </div>
+  </div>
+
+  <!-- CANVAS -->
+  <div class="canvas-wrap" id="canvasWrap">
+    <div class="tree-canvas" id="treeCanvas">
+      <svg class="svg-overlay" id="svgOverlay"></svg>
+      <div class="empty-state" id="emptyState">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <h2>No members yet</h2>
+        <p>Click "Add Member" to start building<br>your family tree</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL PANEL -->
+  <div class="detail-panel" id="detailPanel">
+    <button class="dp-close" id="dpClose">✕</button>
+    <div class="detail-panel-inner" id="detailPanelInner"></div>
+  </div>
+</div>
+
+<!-- ZOOM CONTROLS -->
+<div class="zoom-controls">
+  <button class="zoom-btn" id="zoomOut">−</button>
+  <div class="zoom-level" id="zoomLevel">100%</div>
+  <button class="zoom-btn" id="zoomIn">+</button>
+  <button class="zoom-btn" id="zoomReset" title="Reset zoom" style="font-size:.7rem">⌂</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- MODAL: ADD MEMBER -->
+<div class="modal-overlay" id="modalMember">
+  <div class="modal">
+    <h2 id="modalMemberTitle">Add New Member</h2>
+    <div class="avatar-preview-wrap">
+      <img id="avatarPreview" class="avatar-preview" src="" alt="preview">
+      <div style="flex:1">
+        <div class="form-group" style="margin-bottom:0">
+          <label>Photo URL (optional)</label>
+          <input type="text" id="memberImg" placeholder="https://... or leave blank">
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Full Name *</label>
+      <input type="text" id="memberName" placeholder="e.g. Ramesh Tripathi">
+    </div>
+    <div class="form-group">
+      <label>Short Bio</label>
+      <textarea id="memberBio" placeholder="e.g. Born 1952, farmer, patriarch of the family"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelMember">Cancel</button>
+      <button class="btn btn-primary" id="saveMember">Save Member</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD RELATIONSHIP -->
+<div class="modal-overlay" id="modalRel">
+  <div class="modal">
+    <h2>Add Relationship</h2>
+    <div class="form-group">
+      <label>From Member *</label>
+      <select id="relFrom"></select>
+    </div>
+    <div class="form-group">
+      <label>Relationship Type *</label>
+      <select id="relType">
+        <option value="spouse">Spouse</option>
+        <option value="parent">Is Parent of</option>
+        <option value="child">Is Child of</option>
+        <option value="sibling">Is Sibling of</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>To Member *</label>
+      <select id="relTo"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelRel">Cancel</button>
+      <button class="btn btn-primary" id="saveRel">Save Relationship</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var state = {
+  members: {},
+  relationships: [],
+  nextId: 1,
+  selectedId: null,
+  zoom: 1,
+  editingId: null,
+  searchQuery: ''
+};
+
+var DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Crect width='72' height='72' fill='%23333'/%3E%3Ccircle cx='36' cy='28' r='14' fill='%23666'/%3E%3Cellipse cx='36' cy='62' rx='22' ry='16' fill='%23666'/%3E%3C/svg%3E";
+
+function uid() { return 'm' + (state.nextId++); }
+
+function toast(msg, type) {
+  type = type || 'info';
+  var wrap = document.getElementById('toastWrap');
+  var el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(function() {
+    el.style.animation = 'toastIn .3s ease reverse';
+    setTimeout(function() { el.remove(); }, 300);
+  }, 2800);
+}
+
+function saveToStorage() {
+  try {
+    localStorage.setItem('tripathiFamilyTree', JSON.stringify({
+      members: state.members,
+      relationships: state.relationships,
+      nextId: state.nextId
+    }));
+  } catch(e) {}
+}
+
+function loadFromStorage() {
+  try {
+    var raw = localStorage.getItem('tripathiFamilyTree');
+    if (!raw) return;
+    var data = JSON.parse(raw);
+    state.members = data.members || {};
+    state.relationships = data.relationships || [];
+    state.nextId = data.nextId || 1;
+  } catch(e) {}
+}
+
+function getMemberName(id) {
+  return state.members[id] ? state.members[id].name : '?';
+}
+
+function calculateGenerations() {
+  var members = Object.keys(state.members);
+  if (!members.length) return {};
+  var gens = {};
+  var parentOf = {};
+  state.relationships.forEach(function(r) {
+    if (r.type === 'parent') {
+      if (!parentOf[r.to]) parentOf[r.to] = [];
+      parentOf[r.to].push(r.from);
+    }
+    if (r.type === 'child') {
+      if (!parentOf[r.from]) parentOf[r.from] = [];
+      parentOf[r.from].push(r.to);
+    }
+  });
+  var roots = members.filter(function(id) {
+    return !parentOf[id] || parentOf[id].length === 0;
+  });
+  if (!roots.length) roots = [members[0]];
+  var queue = [];
+  roots.forEach(function(r) { gens[r] = 0; queue.push(r); });
+  var spouseOf = {};
+  state.relationships.forEach(function(r) {
+    if (r.type === 'spouse') {
+      spouseOf[r.from] = r.to;
+      spouseOf[r.to] = r.from;
+    }
+  });
+  var childOf = {};
+  state.relationships.forEach(function(r) {
+    if (r.type === 'parent') {
+      childOf[r.to] = childOf[r.to] || [];
+      childOf[r.to].push(r.from);
+    }
+    if (r.type === 'child') {
+      childOf[r.from] = childOf[r.from] || [];
+      childOf[r.from].push(r.to);
+    }
+  });
+  var visited = {};
+  queue.forEach(function(id) { visited[id] = true; });
+  var i = 0;
+  while (i < queue.length) {
+    var cur = queue[i++];
+    var g = gens[cur];
+    var spouse = spouseOf[cur];
+    if (spouse && gens[spouse] === undefined) { gens[spouse] = g; if (!visited[spouse]) { visited[spouse] = true; queue.push(spouse); } }
+    var children = childOf[cur] || [];
+    children.forEach(function(ch) {
+      if (gens[ch] === undefined) { gens[ch] = g + 1; if (!visited[ch]) { visited[ch] = true; queue.push(ch); } }
+    });
+  }
+  members.forEach(function(id) { if (gens[id] === undefined) gens[id] = 0; });
+  return gens;
+}
+
+function buildSpouseGroups(genMembers, spouseMap) {
+  var grouped = [];
+  var placed = {};
+  genMembers.forEach(function(id) {
+    if (placed[id]) return;
+    placed[id] = true;
+    var group = [id];
+    if (spouseMap[id] && genMembers.indexOf(spouseMap[id]) !== -1 && !placed[spouseMap[id]]) {
+      placed[spouseMap[id]] = true;
+      group.push(spouseMap[id]);
+    }
+    grouped.push(group);
+  });
+  return grouped;
+}
+
+function renderTree() {
+  var canvas = document.getElementById('treeCanvas');
+  var svg = document.getElementById('svgOverlay');
+  var empty = document.getElementById('emptyState');
+  var members = Object.keys(state.members);
+  document.getElementById('statMembers').textContent = members.length;
+  updateMemberList();
+  var oldRows = canvas.querySelectorAll('.gen-row');
+  oldRows.forEach(function(r) { r.remove(); });
+  svg.innerHTML = '';
+  if (!members.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  var gens = calculateGenerations();
+  var genGroups = {};
+  members.forEach(function(id) {
+    var g = gens[id] !== undefined ? gens[id] : 0;
+    if (!genGroups[g]) genGroups[g] = [];
+    genGroups[g].push(id);
+  });
+  var genNums = Object.keys(genGroups).map(Number).sort(function(a,b){return a-b;});
+  document.getElementById('statGens').textContent = genNums.length;
+  var spouseMap = {};
+  state.relationships.forEach(function(r) {
+    if (r.type === 'spouse') { spouseMap[r.from] = r.to; spouseMap[r.to] = r.from; }
+  });
+  var cardPositions = {};
+  var query = state.searchQuery.toLowerCase();
+  genNums.forEach(function(gNum) {
+    var row = document.createElement('div');
+    row.className = 'gen-row';
+    row.dataset.gen = gNum;
+    var lbl = document.createElement('div');
+    lbl.className = 'gen-label';
+    lbl.textContent = 'Gen ' + (gNum + 1);
+    row.appendChild(lbl);
+    canvas.appendChild(row);
+    var groups = buildSpouseGroups(genGroups[gNum], spouseMap);
+    groups.forEach(function(group) {
+      if (group.length === 2) {
+        var cg = document.createElement('div');
+        cg.className = 'couple-group';
+        cg.appendChild(createCard(group[0], gens[group[0]], query));
+        var ml = document.createElement('div');
+        ml.className = 'marriage-line';
+        cg.appendChild(ml);
+        cg.appendChild(createCard(group[1], gens[group[1]], query));
+        row.appendChild(cg);
+      } else {
+        row.appendChild(createCard(group[0], gens[group[0]], query));
+      }
+    });
+  });
+  requestAnimationFrame(function() {
+    var allCards = canvas.querySelectorAll('.member-card');
+    allCards.forEach(function(card) {
+      var rect = card.getBoundingClientRect();
+      var canvasRect = canvas.getBoundingClientRect();
+      cardPositions[card.dataset.id] = {
+        x: rect.left - canvasRect.left + rect.width / 2,
+        y: rect.top - canvasRect.top,
+        bottom: rect.top - canvasRect.top + rect.height,
+        w: rect.width,
+        h: rect.height
+      };
+    });
+    svg.setAttribute('width', canvas.scrollWidth);
+    svg.setAttribute('height', canvas.scrollHeight);
+    drawConnectors(svg, cardPositions, gens, spouseMap);
+  });
+}
+
+function createCard(id, gen, query) {
+  var m = state.members[id];
+  var card = document.createElement('div');
+  card.className = 'member-card';
+  card.dataset.id = id;
+  if (state.selectedId === id) card.classList.add('selected');
+  if (query && m.name.toLowerCase().indexOf(query) === -1) card.classList.add('dim');
+  var img = document.createElement('img');
+  img.className = 'card-avatar';
+  img.src = m.img || DEFAULT_AVATAR;
+  img.alt = m.name;
+  img.onerror = function() { this.src = DEFAULT_AVATAR; };
+  var name = document.createElement('div');
+  name.className = 'card-name';
+  name.textContent = m.name;
+  var bio = document.createElement('div');
+  bio.className = 'card-bio';
+  bio.textContent = m.bio || 'No bio added';
+  var badge = document.createElement('div');
+  badge.className = 'card-gen-badge';
+  badge.textContent = 'Generation ' + (gen + 1);
+  var actions = document.createElement('div');
+  actions.className = 'card-actions';
+  var editBtn = document.createElement('button');
+  editBtn.className = 'card-btn card-btn-edit';
+  editBtn.title = 'Edit';
+  editBtn.innerHTML = '✎';
+  editBtn.onclick = function(e) { e.stopPropagation(); openEditMember(id); };
+  var delBtn = document.createElement('button');
+  delBtn.className = 'card-btn card-btn-del';
+  delBtn.title = 'Delete member';
+  delBtn.innerHTML = '✕';
+  delBtn.onclick = function(e) { e.stopPropagation(); deleteMember(id); };
+  actions.appendChild(editBtn);
+  actions.appendChild(delBtn);
+  card.appendChild(img);
+  card.appendChild(name);
+  card.appendChild(bio);
+  card.appendChild(badge);
+  card.appendChild(actions);
+  card.addEventListener('click', function() { selectMember(id); });
+  return card;
+}
+
+function drawConnectors(svg, positions, gens, spouseMap) {
+  var parentChildRels = [];
+  state.relationships.forEach(function(r) {
+    if (r.type === 'parent') parentChildRels.push({ parent: r.from, child: r.to });
+    if (r.type === 'child') parentChildRels.push({ parent: r.to, child: r.from });
+  });
+  parentChildRels.forEach(function(pc) {
+    var p = positions[pc.parent];
+    var c = positions[pc.child];
+    if (!p || !c) return;
+    var x1 = p.x;
+    var y1 = p.bottom;
+    var x2 = c.x;
+    var y2 = c.y;
+    var mid = (y1 + y2) / 2;
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M'+x1+','+y1+' C'+x1+','+mid+' '+x2+','+mid+' '+x2+','+y2);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', 'rgba(232,184,109,0.4)');
+    path.setAttribute('stroke-width', '1.5');
+    path.setAttribute('stroke-dasharray', '4 3');
+    svg.appendChild(path);
+    var dot1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    dot1.setAttribute('cx', x2); dot1.setAttribute('cy', y2);
+    dot1.setAttribute('r', '3'); dot1.setAttribute('fill', 'rgba(232,184,109,0.6)');
+    svg.appendChild(dot1);
+  });
+}
+
+function selectMember(id) {
+  state.selectedId = id;
+  renderTree();
+  openDetailPanel(id);
+}
+
+function openDetailPanel(id) {
+  var m = state.members[id];
+  if (!m) return;
+  var panel = document.getElementById('detailPanel');
+  var inner = document.getElementById('detailPanelInner');
+  panel.classList.add('open');
+  var myRels = state.relationships.filter(function(r) { return r.from === id || r.to === id; });
+  var parents = [], children = [], spouses = [], siblings = [];
+  myRels.forEach(function(r) {
+    if (r.type === 'parent' && r.from === id) children.push(r.to);
+    if (r.type === 'parent' && r.to === id) parents.push(r.from);
+    if (r.type === 'child' && r.from === id) parents.push(r.to);
+    if (r.type === 'child' && r.to === id) children.push(r.from);
+    if (r.type === 'spouse') { var other = r.from === id ? r.to : r.from; spouses.push(other); }
+    if (r.type === 'sibling') { var other2 = r.from === id ? r.to : r.from; siblings.push(other2); }
+  });
+  function makeChips(ids, type) {
+    if (!ids.length) return '<span style="font-size:.75rem;color:var(--text3)">None</span>';
+    return ids.map(function(rid) {
+      return '<span class="rel-chip rel-'+type+'">'
+        + getMemberName(rid)
+        + '<button class="rel-del" onclick="deleteRelationshipByMembers(\''+id+'\',\''+rid+'\',\''+type+'\')" title="Remove this relationship">✕</button>'
+        + '</span>';
+    }).join('');
+  }
+  inner.innerHTML =
+    '<img class="dp-avatar" src="'+(m.img||DEFAULT_AVATAR)+'" onerror="this.src=\''+DEFAULT_AVATAR+'\'" alt="'+m.name+'">'
+    +'<div class="dp-name">'+m.name+'</div>'
+    +'<div class="dp-bio">'+(m.bio||'No bio added')+'</div>'
+    +'<div class="dp-section"><h4>Parents</h4><div>'+makeChips(parents,'parent')+'</div></div>'
+    +'<div class="dp-section"><h4>Spouse</h4><div>'+makeChips(spouses,'spouse')+'</div></div>'
+    +'<div class="dp-section"><h4>Children</h4><div>'+makeChips(children,'child')+'</div></div>'
+    +'<div class="dp-section"><h4>Siblings</h4><div>'+makeChips(siblings,'sibling')+'</div></div>'
+    +'<div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">'
+    +'<button class="btn btn-ghost" style="font-size:.75rem" onclick="openEditMember(\''+id+'\')">✎ Edit</button>'
+    +'<button class="btn btn-danger" style="font-size:.75rem" onclick="deleteMember(\''+id+'\')">✕ Delete</button>'
+    +'</div>';
+}
+
+window.deleteRelationshipByMembers = function(id1, id2, type) {
+  var before = state.relationships.length;
+  state.relationships = state.relationships.filter(function(r) {
+    if (r.type === type) {
+      if ((r.from === id1 && r.to === id2) || (r.from === id2 && r.to === id1)) return false;
+    }
+    if (type === 'parent') {
+      if (r.type === 'child' && ((r.from === id2 && r.to === id1) || (r.from === id1 && r.to === id2))) return false;
+    }
+    if (type === 'child') {
+      if (r.type === 'parent' && ((r.from === id2 && r.to === id1) || (r.from === id1 && r.to === id2))) return false;
+    }
+    return true;
+  });
+  if (state.relationships.length < before) {
+    toast('Relationship removed', 'success');
+    saveToStorage();
+    renderTree();
+    openDetailPanel(id1);
+  }
+};
+
+function deleteMember(id) {
+  if (!confirm('Delete ' + state.members[id].name + '? This will also remove all their relationships.')) return;
+  delete state.members[id];
+  state.relationships = state.relationships.filter(function(r) { return r.from !== id && r.to !== id; });
+  if (state.selectedId === id) {
+    state.selectedId = null;
+    document.getElementById('detailPanel').classList.remove('open');
+  }
+  saveToStorage();
+  renderTree();
+  toast('Member deleted', 'info');
+}
+
+function updateMemberList() {
+  var list = document.getElementById('memberList');
+  list.innerHTML = '';
+  var members = Object.keys(state.members);
+  var query = state.searchQuery.toLowerCase();
+  members.forEach(function(id) {
+    var m = state.members[id];
+    if (query && m.name.toLowerCase().indexOf(query) === -1) return;
+    var item = document.createElement('div');
+    item.className = 'member-list-item' + (state.selectedId === id ? ' active' : '');
+    var img = document.createElement('img');
+    img.src = m.img || DEFAULT_AVATAR;
+    img.onerror = function() { this.src = DEFAULT_AVATAR; };
+    var info = document.createElement('div');
+    var nm = document.createElement('div');
+    nm.className = 'mlname';
+    nm.textContent = m.name;
+    var gn = document.createElement('div');
+    gn.className = 'mlgen';
+    gn.textContent = m.bio ? m.bio.substring(0, 30) + '…' : 'No bio';
+    info.appendChild(nm);
+    info.appendChild(gn);
+    item.appendChild(img);
+    item.appendChild(info);
+    item.addEventListener('click', function() { selectMember(id); });
+    list.appendChild(item);
+  });
+  if (!list.children.length) {
+    list.innerHTML = '<div style="padding:16px;font-size:.8rem;color:var(--text3);text-align:center">No members found</div>';
+  }
+}
+
+function populateSelects() {
+  var from = document.getElementById('relFrom');
+  var to = document.getElementById('relTo');
+  from.innerHTML = '';
+  to.innerHTML = '';
+  Object.keys(state.members).forEach(function(id) {
+    var opt1 = document.createElement('option');
+    opt1.value = id;
+    opt1.textContent = state.members[id].name;
+    from.appendChild(opt1);
+    var opt2 = document.createElement('option');
+    opt2.value = id;
+    opt2.textContent = state.members[id].name;
+    to.appendChild(opt2);
+  });
+}
+
+function openAddMember() {
+  state.editingId = null;
+  document.getElementById('modalMemberTitle').textContent = 'Add New Member';
+  document.getElementById('memberName').value = '';
+  document.getElementById('memberBio').value = '';
+  document.getElementById('memberImg').value = '';
+  document.getElementById('avatarPreview').src = DEFAULT_AVATAR;
+  document.getElementById('modalMember').classList.add('show');
+  document.getElementById('memberName').focus();
+}
+
+function openEditMember(id) {
+  var m = state.members[id];
+  state.editingId = id;
+  document.getElementById('modalMemberTitle').textContent = 'Edit Member';
+  document.getElementById('memberName').value = m.name;
+  document.getElementById('memberBio').value = m.bio || '';
+  document.getElementById('memberImg').value = m.img || '';
+  document.getElementById('avatarPreview').src = m.img || DEFAULT_AVATAR;
+  document.getElementById('modalMember').classList.add('show');
+}
+
+function saveMember() {
+  var name = document.getElementById('memberName').value.trim();
+  var bio = document.getElementById('memberBio').value.trim();
+  var img = document.getElementById('memberImg').value.trim();
+  if (!name) { toast('Name is required', 'error'); return; }
+  if (state.editingId) {
+    state.members[state.editingId].name = name;
+    state.members[state.editingId].bio = bio;
+    state.members[state.editingId].img = img;
+    toast('Member updated', 'success');
+  } else {
+    var id = uid();
+    state.members[id] = { name: name, bio: bio, img: img };
+    toast('Member added: ' + name, 'success');
+  }
+  document.getElementById('modalMember').classList.remove('show');
+  saveToStorage();
+  renderTree();
+}
+
+function openAddRel() {
+  if (Object.keys(state.members).length < 2) { toast('Add at least 2 members first', 'error'); return; }
+  populateSelects();
+  document.getElementById('modalRel').classList.add('show');
+}
+
+function saveRel() {
+  var from = document.getElementById('relFrom').value;
+  var to = document.getElementById('relTo').value;
+  var type = document.getElementById('relType').value;
+  if (from === to) { toast('Cannot relate a member to themselves', 'error'); return; }
+  var exists = state.relationships.some(function(r) {
+    return r.type === type && ((r.from === from && r.to === to) || (r.from === to && r.to === from));
+  });
+  if (exists) { toast('This relationship already exists', 'error'); return; }
+  state.relationships.push({ from: from, to: to, type: type });
+  toast('Relationship added', 'success');
+  document.getElementById('modalRel').classList.remove('show');
+  saveToStorage();
+  renderTree();
+  if (state.selectedId) openDetailPanel(state.selectedId);
+}
+
+function exportJSON() {
+  var data = { members: state.members, relationships: state.relationships, nextId: state.nextId };
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'tripathi-family-tree.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Exported successfully', 'success');
+}
+
+function importJSON(file) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (!data.members) throw new Error('Invalid file');
+      state.members = data.members;
+      state.relationships = data.relationships || [];
+      state.nextId = data.nextId || 1;
+      state.selectedId = null;
+      document.getElementById('detailPanel').classList.remove('open');
+      saveToStorage();
+      renderTree();
+      toast('Imported ' + Object.keys(state.members).length + ' members', 'success');
+    } catch(err) {
+      toast('Invalid JSON file', 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+var zoomScale = 1;
+function setZoom(z) {
+  zoomScale = Math.min(2, Math.max(0.3, z));
+  document.getElementById('treeCanvas').style.transform = 'scale(' + zoomScale + ')';
+  document.getElementById('treeCanvas').style.transformOrigin = 'top left';
+  document.getElementById('zoomLevel').textContent = Math.round(zoomScale * 100) + '%';
+}
+
+var resizeTimer;
+function onResize() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(function() { renderTree(); }, 200);
+}
+
+document.getElementById('btnAddMember').addEventListener('click', openAddMember);
+document.getElementById('btnAddRel').addEventListener('click', openAddRel);
+document.getElementById('cancelMember').addEventListener('click', function() { document.getElementById('modalMember').classList.remove('show'); });
+document.getElementById('cancelRel').addEventListener('click', function() { document.getElementById('modalRel').classList.remove('show'); });
+document.getElementById('saveMember').addEventListener('click', saveMember);
+document.getElementById('saveRel').addEventListener('click', saveRel);
+document.getElementById('btnExport').addEventListener('click', exportJSON);
+document.getElementById('importInput').addEventListener('change', function(e) { if (e.target.files[0]) { importJSON(e.target.files[0]); e.target.value = ''; } });
+document.getElementById('dpClose').addEventListener('click', function() { document.getElementById('detailPanel').classList.remove('open'); state.selectedId = null; renderTree(); });
+document.getElementById('zoomIn').addEventListener('click', function() { setZoom(zoomScale + 0.1); });
+document.getElementById('zoomOut').addEventListener('click', function() { setZoom(zoomScale - 0.1); });
+document.getElementById('zoomReset').addEventListener('click', function() { setZoom(1); });
+document.getElementById('btnDark').addEventListener('click', function() {
+  document.body.classList.toggle('light');
+  localStorage.setItem('ftTheme', document.body.classList.contains('light') ? 'light' : 'dark');
+});
+document.getElementById('memberImg').addEventListener('input', function() {
+  var v = this.value.trim();
+  document.getElementById('avatarPreview').src = v || DEFAULT_AVATAR;
+});
+document.getElementById('avatarPreview').addEventListener('error', function() { this.src = DEFAULT_AVATAR; });
+
+var searchTimer;
+document.getElementById('searchInput').addEventListener('input', function() {
+  clearTimeout(searchTimer);
+  var q = this.value;
+  searchTimer = setTimeout(function() {
+    state.searchQuery = q;
+    renderTree();
+  }, 250);
+});
+
+document.getElementById('sidebarToggle').addEventListener('click', function() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+});
+
+document.getElementById('modalMember').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+document.getElementById('modalRel').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('modalMember').classList.remove('show');
+    document.getElementById('modalRel').classList.remove('show');
+  }
+  if (e.key === 'Enter' && document.getElementById('modalMember').classList.contains('show')) saveMember();
+  if (e.key === 'Enter' && document.getElementById('modalRel').classList.contains('show')) saveRel();
+});
+
+window.addEventListener('resize', onResize);
+
+if (localStorage.getItem('ftTheme') === 'light') document.body.classList.add('light');
+
+loadFromStorage();
+
+if (!Object.keys(state.members).length) {
+  var id1 = uid(); state.members[id1] = { name: 'Ramesh Tripathi', bio: 'Patriarch of the family, born 1948, Jaunpur', img: '' };
+  var id2 = uid(); state.members[id2] = { name: 'Savitri Tripathi', bio: 'Matriarch, homemaker, born 1952', img: '' };
+  var id3 = uid(); state.members[id3] = { name: 'Arun Tripathi', bio: 'Son, software engineer, born 1978', img: '' };
+  var id4 = uid(); state.members[id4] = { name: 'Priya Tripathi', bio: 'Daughter-in-law, teacher, born 1980', img: '' };
+  var id5 = uid(); state.members[id5] = { name: 'Ishan Tripathi', bio: 'Grandson, BCA Graduate, web developer', img: '' };
+  state.relationships.push({ from: id1, to: id2, type: 'spouse' });
+  state.relationships.push({ from: id1, to: id3, type: 'parent' });
+  state.relationships.push({ from: id2, to: id3, type: 'parent' });
+  state.relationships.push({ from: id3, to: id4, type: 'spouse' });
+  state.relationships.push({ from: id3, to: id5, type: 'parent' });
+  state.relationships.push({ from: id4, to: id5, type: 'parent' });
+  saveToStorage();
+}
+
+renderTree();
+</script>
+</body>
+</html>
+
