@@ -91,8 +91,18 @@ body{-webkit-font-smoothing:antialiased}
 /* HOWTO */
 .howto{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
 .howto h2{font-size:1rem;font-family:var(--fd);margin-bottom:10px;color:var(--accent2)}
-.howto ol{padding-left:20px;font-size:.85rem;color:var(--text2);line-height:1.8}
-.howto .btn{margin-top:14px}
+.howto .pending-hint{margin-bottom:14px}
+
+.member-form{display:flex;flex-direction:column;gap:12px}
+.form-row{display:flex;gap:12px;flex-wrap:wrap}
+.form-row label{flex:1;min-width:160px;display:flex;flex-direction:column;gap:5px;font-size:.78rem;color:var(--text2)}
+.form-row input,.form-row select,.form-row textarea{
+  padding:9px 11px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);
+  color:var(--text);font-family:var(--fs);font-size:.85rem;outline:none;transition:border .2s}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--accent)}
+.member-form textarea{resize:vertical}
+.member-form .btn{align-self:flex-start;margin-top:4px}
+.member-form .btn:disabled{opacity:.6;cursor:not-allowed}
 
 /* DETAIL OVERLAY */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;
