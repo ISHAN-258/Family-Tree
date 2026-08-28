@@ -49,13 +49,44 @@
   </section>
 
   <section class="howto">
-    <h2>&#x1F4DD; Apna naam kaise jodein</h2>
-    <ol>
-      <li>Neeche diya Google Form kholo (link organizer se lo)</li>
-      <li>Apna naam, photo ka link (URL), aur family mein kiske saath relation hai — wo bharo</li>
-      <li>Submit karte hi tumhara card yahan tree mein khud ban jayega</li>
-    </ol>
-    <a id="formLink" class="btn btn-primary" href="#" target="_blank" rel="noopener" hidden>Form Kholein &rarr;</a>
+    <h2>&#x1F4DD; Apna naam jodein</h2>
+    <p class="pending-hint">Naam aur Related To zaroori hai &mdash; baaki optional. "Related To" mein us insaan ka <b>exact</b> naam likho jo tree mein pehle se hai.</p>
+    <form id="memberForm" class="member-form">
+      <div class="form-row">
+        <label>Naam*<input type="text" name="fName" required></label>
+        <label>Relationship Type*
+          <select name="fType" required>
+            <option value="">Chunein&hellip;</option>
+            <option>Child of</option>
+            <option>Parent of</option>
+            <option>Spouse of</option>
+            <option>Sibling of</option>
+            <option>Grandchild of</option>
+            <option>Grandparent of</option>
+            <option>Uncle of</option>
+            <option>Aunt of</option>
+            <option>Nephew of</option>
+            <option>Niece of</option>
+            <option>Cousin of</option>
+            <option>In-law of</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Related To*<input type="text" name="fRelTo" required placeholder="Exact naam"></label>
+      </div>
+      <div class="form-row">
+        <label>Date of Birth<input type="date" name="fDob"></label>
+        <label>Marriage Date<input type="date" name="fMarriage"></label>
+      </div>
+      <div class="form-row">
+        <label>Image Link<input type="url" name="fImg" placeholder="https://..."></label>
+      </div>
+      <div class="form-row">
+        <label>Bio / Note<textarea name="fBio" rows="2"></textarea></label>
+      </div>
+      <button type="submit" id="submitBtn" class="btn btn-primary">Jama Karein</button>
+    </form>
   </section>
 
 </main>
