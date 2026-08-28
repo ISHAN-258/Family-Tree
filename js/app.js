@@ -2,16 +2,14 @@
    FAMILY TREE — configure before deploying
    ========================================================================= */
 
-// 1. Paste your published Google Sheet CSV link here (File > Share > Publish
-//    to web > select the Sheet > CSV). Leave blank to preview with seed only.
-var SHEET_CSV_URL = "";
+// 1. Deploy apps-script/Code.gs as a Web App (see README) and paste the
+//    /exec URL here. This is both where the site reads data FROM and
+//    where the inline form POSTs new entries TO.
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTtxgCaAkLskkjY9_J7j3L62TYOPqgRhhHNMgM_NMfbTvRbGe6BqJAhqG8EzDmNVpw/exec";
 
-// 2. Paste your Google Form link here (shown as the "Form Kholein" button).
-var FORM_URL = "";
-
-// 3. The five starting members — the fixed chain everyone else attaches to.
+// 2. The five starting members — the fixed chain everyone else attaches to.
 //    Fill NAME (leave blank to hide the name and show only the role) and an
-//    optional photo URL. `parentOf` links each one to the next in the chain.
+//    optional photo URL.
 var SEED_MEMBERS = [
   { id: "S1", name: "", role: "Great-Grandfather", img: "" },
   { id: "S2", name: "", role: "Grandfather",        img: "" },
@@ -24,7 +22,7 @@ var SEED_RELS = [
   { fr: "S1", to: "S2", t: "parent" },
   { fr: "S2", to: "S3", t: "parent" },
   { fr: "S3", to: "S4", t: "parent" }
-  // S5 intentionally left unattached — relate it via the Form like anyone else,
+  // S5 intentionally left unattached — relate it via the form like anyone else,
   // or add a line here e.g. { fr:"S3", to:"S5", t:"parent" }
 ];
 
@@ -50,65 +48,21 @@ function showNotice(msg, isWarn) {
   n.hidden = false;
 }
 
-/* ---------- CSV parsing (handles quoted fields with commas) ---------- */
-function parseCSV(text) {
-  var rows = [], row = [], field = "", inQuotes = false;
-  for (var i = 0; i < text.length; i++) {
-    var c = text[i], next = text[i + 1];
-    if (inQuotes) {
-      if (c === '"' && next === '"') { field += '"'; i++; }
-      else if (c === '"') { inQuotes = false; }
-      else { field += c; }
-    } else {
-      if (c === '"') inQuotes = true;
-      else if (c === ',') { row.push(field); field = ""; }
-      else if (c === '\r') { /* skip */ }
-      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ""; }
-      else field += c;
-    }
-  }
-  if (field.length || row.length) { row.push(field); rows.push(row); }
-  return rows.filter(function (r) { return r.some(function (v) { return v.trim() !== ""; }); });
-}
-
-// Match a header cell to a logical field, tolerant of whatever wording
-// the Google Form auto-generates as the column title.
-function findCol(headers, keywords) {
-  for (var i = 0; i < headers.length; i++) {
-    var h = headers[i].toLowerCase();
-    for (var k = 0; k < keywords.length; k++) {
-      if (h.indexOf(keywords[k]) !== -1) return i;
-    }
-  }
-  return -1;
-}
-
+// Apps Script sheet rows arrive already keyed by our fixed headers
+// (Timestamp, Name, RelationshipType, RelatedTo, DOB, Marriage, ImageLink, Bio)
+// so no header-guessing needed here — just map field names.
 function rowsToSubmissions(rows) {
-  if (!rows.length) return [];
-  var headers = rows[0];
-  var iName = findCol(headers, ["name"]);
-  var iImg = findCol(headers, ["photo", "image", "link", "url"]);
-  var iType = findCol(headers, ["relationship type", "relation type", "type"]);
-  var iRelTo = findCol(headers, ["related to", "relation to", "with whom", "person"]);
-  var iDob = findCol(headers, ["date of birth", "dob", "birth"]);
-  var iMarriage = findCol(headers, ["marriage", "anniversary"]);
-  var iBio = findCol(headers, ["bio", "note"]);
-  var out = [];
-  for (var r = 1; r < rows.length; r++) {
-    var row = rows[r];
-    var name = iName !== -1 ? (row[iName] || "").trim() : "";
-    if (!name) continue;
-    out.push({
-      name: name,
-      img: iImg !== -1 ? (row[iImg] || "").trim() : "",
-      type: iType !== -1 ? normType(row[iType]) : "child",
-      relTo: iRelTo !== -1 ? (row[iRelTo] || "").trim() : "",
-      dob: iDob !== -1 ? (row[iDob] || "").trim() : "",
-      marriage: iMarriage !== -1 ? (row[iMarriage] || "").trim() : "",
-      bio: iBio !== -1 ? (row[iBio] || "").trim() : ""
-    });
-  }
-  return out;
+  return rows.filter(function (r) { return r.Name; }).map(function (r) {
+    return {
+      name: String(r.Name || "").trim(),
+      img: String(r.ImageLink || "").trim(),
+      type: normType(r.RelationshipType),
+      relTo: String(r.RelatedTo || "").trim(),
+      dob: String(r.DOB || "").trim(),
+      marriage: String(r.Marriage || "").trim(),
+      bio: String(r.Bio || "").trim()
+    };
+  });
 }
 
 // Basic types map straight onto parent/child/spouse/sibling edges.
@@ -398,17 +352,17 @@ function escapeHtml(s) {
 
 /* ---------- Load data ---------- */
 function loadData() {
-  if (!SHEET_CSV_URL) {
+  if (!APPS_SCRIPT_URL) {
     buildData([]);
     renderTree();
-    showNotice("Preview mode: sirf shuru ke 5 members dikh rahe hain. Google Sheet CSV link jodo js/app.js mein (SHEET_CSV_URL) taaki form submissions yahan aayein.");
+    showNotice("Preview mode: sirf shuru ke 5 members dikh rahe hain. Apps Script URL jodo js/app.js mein (APPS_SCRIPT_URL) taaki form submissions yahan aayein.");
     return;
   }
-  fetch(SHEET_CSV_URL + (SHEET_CSV_URL.indexOf("?") === -1 ? "?" : "&") + "t=" + Date.now())
-    .then(function (res) { if (!res.ok) throw new Error("fetch failed"); return res.text(); })
-    .then(function (text) {
-      var rows = parseCSV(text);
-      var submissions = rowsToSubmissions(rows);
+  fetch(APPS_SCRIPT_URL + "?t=" + Date.now())
+    .then(function (res) { if (!res.ok) throw new Error("fetch failed"); return res.json(); })
+    .then(function (data) {
+      if (!data.ok) throw new Error(data.error || "bad response");
+      var submissions = rowsToSubmissions(data.rows || []);
       buildData(submissions);
       renderTree();
       document.getElementById("noticeBanner").hidden = true;
@@ -416,16 +370,53 @@ function loadData() {
     .catch(function () {
       buildData([]);
       renderTree();
-      showNotice("Sheet load nahi ho payi. CSV link publish hai ya nahi check karo (File > Share > Publish to web).", true);
+      showNotice("Data load nahi ho payi. Apps Script deploy sahi se hua hai ya nahi check karo (README dekho).", true);
+    });
+}
+
+/* ---------- Submit the inline form ---------- */
+function submitForm(e) {
+  e.preventDefault();
+  if (!APPS_SCRIPT_URL) { toast("Pehle APPS_SCRIPT_URL set karo js/app.js mein", "error"); return; }
+  var f = e.target;
+  var payload = {
+    name: f.fName.value.trim(),
+    relationshipType: f.fType.value,
+    relatedTo: f.fRelTo.value.trim(),
+    dob: f.fDob.value,
+    marriage: f.fMarriage.value,
+    img: f.fImg.value.trim(),
+    bio: f.fBio.value.trim()
+  };
+  if (!payload.name || !payload.relationshipType || !payload.relatedTo) {
+    toast("Naam, Relationship Type, aur Related To zaroori hain", "error");
+    return;
+  }
+  var btn = document.getElementById("submitBtn");
+  btn.disabled = true; btn.textContent = "Jama ho raha hai\u2026";
+  fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" }, // avoids CORS preflight on Apps Script
+    body: JSON.stringify(payload)
+  })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      if (!data.ok) throw new Error(data.error || "failed");
+      toast("Jud gaye! Tree mein dikhega thodi der mein.", "success");
+      f.reset();
+      loadData();
+    })
+    .catch(function () {
+      toast("Submit nahi ho paya. Apps Script URL/deployment check karo.", "error");
+    })
+    .finally(function () {
+      btn.disabled = false; btn.textContent = "Jama Karein";
     });
 }
 
 /* ---------- Wire up ---------- */
 document.addEventListener("DOMContentLoaded", function () {
-  if (FORM_URL) {
-    var fl = document.getElementById("formLink");
-    fl.href = FORM_URL; fl.hidden = false;
-  }
+  document.getElementById("memberForm").addEventListener("submit", submitForm);
   document.getElementById("btnRefresh").addEventListener("click", function () { loadData(); toast("Refresh ho raha hai\u2026"); });
   document.getElementById("btnTheme").addEventListener("click", function () {
     document.body.classList.toggle("light");
