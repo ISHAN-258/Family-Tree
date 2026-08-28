@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parivar Vriksh — Family Tree</title>
+<meta name="description" content="Our family tree — add yourself and see how everyone connects.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-icon" aria-hidden="true">&#x1F33F;</span>
+    <div class="brand-text">
+      <div class="brand-hi">परिवार वृक्ष</div>
+      <div class="brand-en">Family Tree</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button id="btnRefresh" class="btn btn-ghost">&#x21bb; Refresh</button>
+    <button id="btnTheme" class="btn-icon" title="Toggle theme">&#x263E;</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="noticeBanner" class="notice" hidden></section>
+
+  <section id="statsRow" class="stats-row">
+    <div class="stat-chip"><b id="statMembers">0</b> Members</div>
+    <div class="stat-chip"><b id="statGens">0</b> Generations</div>
+    <div class="stat-chip"><b id="statPending">0</b> Pending</div>
+  </section>
+
+  <section id="treeWrap" class="tree-wrap" aria-label="Family tree">
+    <div id="treeRoot" class="tree-root"></div>
+    <div id="emptyState" class="empty-state" hidden>
+      <p>Tree khaali hai. Google Sheet link jodo <code>js/app.js</code> mein &mdash; dekho README.</p>
+    </div>
+  </section>
+
+  <section id="pendingSection" class="pending-section" hidden>
+    <h2>&#x23F3; Pending &mdash; needs a name match</h2>
+    <p class="pending-hint">Yeh log submit hue par jis naam se relation bataya, wo tree mein nahi mila. Sheet mein "Related To" column check karo &mdash; spelling exact match honi chahiye.</p>
+    <div id="pendingList" class="pending-list"></div>
+  </section>
+
+  <section class="howto">
+    <h2>&#x1F4DD; Apna naam kaise jodein</h2>
+    <ol>
+      <li>Neeche diya Google Form kholo (link organizer se lo)</li>
+      <li>Apna naam, photo ka link (URL), aur family mein kiske saath relation hai — wo bharo</li>
+      <li>Submit karte hi tumhara card yahan tree mein khud ban jayega</li>
+    </ol>
+    <a id="formLink" class="btn btn-primary" href="#" target="_blank" rel="noopener" hidden>Form Kholein &rarr;</a>
+  </section>
+
+</main>
+
+<div id="memberOverlay" class="overlay" hidden>
+  <div class="member-card-detail" role="dialog" aria-modal="true">
+    <button id="detailClose" class="detail-close" aria-label="Close">&#x2715;</button>
+    <div id="detailInner"></div>
+  </div>
+</div>
+
+<div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
