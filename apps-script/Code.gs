@@ -20,12 +20,25 @@ var HEADERS = ["Timestamp", "Name", "RelationshipType", "RelatedTo", "DOB", "Mar
 function getSheet_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
-  if (sh.getLastRow() === 0) sh.appendRow(HEADERS);
+  if (sh.getLastRow() === 0) {
+    sh.appendRow(HEADERS);
+    // Force DOB (E) and Marriage (F) to plain text so Sheets doesn't
+    // auto-convert form dates into Date cells (which shifts by timezone
+    // and reads back differently than what was typed).
+    sh.getRange("E:F").setNumberFormat("@");
+  }
   return sh;
 }
 
 function jsonOut_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function cellToText_(v) {
+  if (Object.prototype.toString.call(v) === "[object Date]") {
+    return Utilities.formatDate(v, Session.getScriptTimeZone(), "yyyy-MM-dd");
+  }
+  return v;
 }
 
 // GET — returns all rows as an array of objects, for the site to render.
@@ -37,7 +50,7 @@ function doGet(e) {
   var rows = [];
   for (var r = 1; r < values.length; r++) {
     var obj = {};
-    for (var c = 0; c < headers.length; c++) obj[headers[c]] = values[r][c];
+    for (var c = 0; c < headers.length; c++) obj[headers[c]] = cellToText_(values[r][c]);
     if (obj.Name) rows.push(obj);
   }
   return jsonOut_({ ok: true, rows: rows });
