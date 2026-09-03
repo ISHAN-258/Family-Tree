@@ -102,35 +102,54 @@ function siblingsOfInGraph(id) {
   });
   return out;
 }
+// "Sibling" in the fullest sense: explicit sibling-type edges PLUS anyone
+// who shares a recorded parent with id. Two different submissions can end
+// up expressing the same siblinghood two different ways (a floating
+// "Sibling of" claim vs. both people separately being "Child of" the same
+// parent) — this merges both views so downstream relation-resolving
+// (uncle/aunt/nephew/niece/cousin) sees the complete picture either way.
+function trueSiblingsOf(id) {
+  var set = {};
+  siblingsOfInGraph(id).forEach(function (s) { set[s] = true; });
+  parentsOfInGraph(id).forEach(function (p) {
+    childrenOfInGraph(p).forEach(function (c) { if (c !== id) set[c] = true; });
+  });
+  return Object.keys(set);
+}
 
-// Resolve an extended relation type to a concrete { fr, to, t } edge relative
-// to relToId, or return null if it can't be resolved unambiguously.
+// Resolve an extended relation type to either:
+//  - { anchors: [ids], t: "parent" }       submitter becomes CHILD of every anchor
+//  - { anchor: id, t: "parent_of_anchor" }  submitter becomes PARENT of anchor
+//  - { anchor: id, t: "sibling" }           floating fallback (no known parent to anchor to yet)
+// or null if it can't be resolved unambiguously.
 function resolveExtended(type, relToId) {
   if (type === "grandchild") { // child of a child of relToId
     var ch = childrenOfInGraph(relToId);
-    if (ch.length === 1) return { anchor: ch[0], t: "parent" }; // submitter is child of ch[0]
+    if (ch.length === 1) return { anchors: [ch[0]], t: "parent" };
     return null;
   }
   if (type === "grandparent") { // parent of a parent of relToId
     var pa = parentsOfInGraph(relToId);
-    if (pa.length === 1) return { anchor: pa[0], t: "parent_of_anchor" }; // submitter is parent of pa[0]
+    if (pa.length === 1) return { anchor: pa[0], t: "parent_of_anchor" };
     return null;
   }
   if (type === "uncle" || type === "aunt") { // sibling of a parent of relToId
-    var pa2 = parentsOfInGraph(relToId);
-    if (pa2.length === 1) return { anchor: pa2[0], t: "sibling" };
-    return null;
+    var p1 = parentsOfInGraph(relToId);
+    if (p1.length !== 1) return null;
+    var gp = parentsOfInGraph(p1[0]); // relToId's grandparent(s), if known
+    if (gp.length) return { anchors: gp, t: "parent" }; // real blood anchor: child of the grandparent(s)
+    return { anchor: p1[0], t: "sibling" }; // grandparent not in tree yet — floating fallback
   }
   if (type === "nephew" || type === "niece") { // child of a sibling of relToId
-    var sib = siblingsOfInGraph(relToId);
-    if (sib.length === 1) return { anchor: sib[0], t: "parent" };
+    var sib = trueSiblingsOf(relToId);
+    if (sib.length === 1) return { anchors: [sib[0]], t: "parent" };
     return null;
   }
-  if (type === "cousin") { // child of an uncle/aunt: sibling of relToId's parent
-    var pa3 = parentsOfInGraph(relToId);
-    if (pa3.length === 1) {
-      var pSibs = siblingsOfInGraph(pa3[0]);
-      if (pSibs.length === 1) return { anchor: pSibs[0], t: "parent" };
+  if (type === "cousin") { // child of an aunt/uncle: sibling of relToId's parent
+    var p2 = parentsOfInGraph(relToId);
+    if (p2.length === 1) {
+      var auntsUncles = trueSiblingsOf(p2[0]);
+      if (auntsUncles.length === 1) return { anchors: [auntsUncles[0]], t: "parent" };
     }
     return null;
   }
@@ -164,26 +183,36 @@ function buildData(submissions) {
     var relToId = findMemberByName(sub.relTo);
     if (!relToId) { sub.reason = 'name "' + sub.relTo + '" not found'; S.pending.push(sub); return; }
 
-    var edge = null;
+    var edge = null, multiAnchors = null;
     if (BASIC_TYPES[sub.type]) {
       if (sub.type === "parent") edge = { fr: null, to: relToId, t: "parent" };       // submitter is parent
       else if (sub.type === "child") edge = { fr: relToId, to: null, t: "parent" };   // submitter is child
       else if (sub.type === "spouse") edge = { fr: null, to: relToId, t: "spouse" };
-      else if (sub.type === "sibling") edge = { fr: null, to: relToId, t: "sibling" };
+      else if (sub.type === "sibling") {
+        // Anchor to the SAME recorded parent(s) as relTo, so siblinghood is
+        // an actual shared-parent link, not just a floating claim.
+        var sibParents = parentsOfInGraph(relToId);
+        if (sibParents.length) multiAnchors = sibParents;
+        else edge = { fr: null, to: relToId, t: "sibling" }; // relTo has no recorded parent yet — floating fallback
+      }
     } else {
       var res = resolveExtended(sub.type, relToId);
       if (!res) { sub.reason = sub.type + " relation could not be worked out yet (add the in-between family member first)"; S.pending.push(sub); return; }
-      if (res.t === "parent") edge = { fr: res.anchor, to: null, t: "parent" };            // submitter is child of anchor
+      if (res.t === "parent") multiAnchors = res.anchors;                                   // submitter is child of every anchor
       else if (res.t === "parent_of_anchor") edge = { fr: null, to: res.anchor, t: "parent" }; // submitter is parent of anchor
       else if (res.t === "sibling") edge = { fr: null, to: res.anchor, t: "sibling" };
     }
-    if (!edge) { S.pending.push(sub); return; }
+    if (!edge && !multiAnchors) { S.pending.push(sub); return; }
 
     n++;
     var id = "F" + n;
     S.members[id] = { name: sub.name, role: "", img: sub.img, dob: sub.dob, marriage: sub.marriage, bio: sub.bio, seed: false };
-    if (edge.fr === null) edge.fr = id; else edge.to = id;
-    S.rels.push(edge);
+    if (multiAnchors) {
+      multiAnchors.forEach(function (p) { S.rels.push({ fr: p, to: id, t: "parent" }); });
+    } else {
+      if (edge.fr === null) edge.fr = id; else edge.to = id;
+      S.rels.push(edge);
+    }
   });
 }
 
@@ -277,6 +306,104 @@ function spouseGroups(arr, spMap) {
   return res;
 }
 
+/* ---------- Branching tree builder (real parent->child / spouse / sibling lines) ---------- */
+function buildRelMaps() {
+  var parentOf = {}, childOf = {}, spouseOf = {}, siblingOf = {};
+  S.rels.forEach(function (r) {
+    if (r.t === "parent") {
+      (parentOf[r.fr] = parentOf[r.fr] || []).push(r.to);
+      (childOf[r.to] = childOf[r.to] || []).push(r.fr);
+    }
+    if (r.t === "spouse") { spouseOf[r.fr] = r.to; spouseOf[r.to] = r.fr; }
+    if (r.t === "sibling") {
+      (siblingOf[r.fr] = siblingOf[r.fr] || []).push(r.to);
+      (siblingOf[r.to] = siblingOf[r.to] || []).push(r.fr);
+    }
+  });
+  return { parentOf: parentOf, childOf: childOf, spouseOf: spouseOf, siblingOf: siblingOf };
+}
+
+// Top-level "units" — connected clusters (via spouse/sibling links) among
+// people with no recorded parent. Someone who married in (no parent of
+// their own) but whose spouse DOES have a recorded parent is NOT a root —
+// they get attached to their spouse during the recursive walk below
+// instead. Only a peer-cluster where NOBODY has a recorded parent anywhere
+// becomes an actual top-level unit.
+function rootUnits(maps, ids) {
+  var peers = {};
+  function addPeer(a, b) { (peers[a] = peers[a] || []).push(b); (peers[b] = peers[b] || []).push(a); }
+  Object.keys(maps.spouseOf).forEach(function (id) { addPeer(id, maps.spouseOf[id]); });
+  Object.keys(maps.siblingOf).forEach(function (id) { maps.siblingOf[id].forEach(function (o) { addPeer(id, o); }); });
+
+  var compVisited = {}, componentHasParent = {};
+  ids.forEach(function (id) {
+    if (compVisited[id]) return;
+    var stack = [id], comp = [];
+    compVisited[id] = true;
+    while (stack.length) {
+      var cur = stack.pop(); comp.push(cur);
+      (peers[cur] || []).forEach(function (p) { if (!compVisited[p]) { compVisited[p] = true; stack.push(p); } });
+    }
+    var hasParent = comp.some(function (c) { return maps.childOf[c] && maps.childOf[c].length; });
+    comp.forEach(function (c) { componentHasParent[c] = hasParent; });
+  });
+
+  var noParentSet = {};
+  ids.forEach(function (id) {
+    if ((!maps.childOf[id] || !maps.childOf[id].length) && !componentHasParent[id]) noParentSet[id] = true;
+  });
+
+  var visited = {}, units = [];
+  Object.keys(noParentSet).forEach(function (id) {
+    if (visited[id]) return;
+    var stack = [id], comp = [];
+    visited[id] = true;
+    while (stack.length) {
+      var cur = stack.pop(); comp.push(cur);
+      (peers[cur] || []).forEach(function (nb) { if (noParentSet[nb] && !visited[nb]) { visited[nb] = true; stack.push(nb); } });
+    }
+    units.push(comp);
+  });
+  return units;
+}
+
+function connKind(a, b, maps) { return maps.spouseOf[a] === b ? "spouse" : "sibling"; }
+
+function unitChildren(unit, maps) {
+  var seen = {}, order = [];
+  unit.forEach(function (id) {
+    (maps.parentOf[id] || []).forEach(function (ch) { if (!seen[ch]) { seen[ch] = true; order.push(ch); } });
+  });
+  return order;
+}
+
+function buildUnitLi(unit, maps, usedSpouses) {
+  var li = document.createElement("li");
+  var row = document.createElement("div"); row.className = "unit-row";
+  unit.forEach(function (id, idx) {
+    row.appendChild(mkCard(id));
+    if (idx < unit.length - 1) {
+      var kind = connKind(unit[idx], unit[idx + 1], maps);
+      var bar = document.createElement("div"); bar.className = "conn-bar conn-" + kind;
+      row.appendChild(bar);
+    }
+  });
+  li.appendChild(row);
+
+  var kids = unitChildren(unit, maps);
+  if (kids.length) {
+    var ul = document.createElement("ul");
+    kids.forEach(function (kid) {
+      var kidUnit = [kid];
+      var sp = maps.spouseOf[kid];
+      if (sp !== undefined && !usedSpouses[sp]) { usedSpouses[sp] = true; kidUnit.push(sp); }
+      ul.appendChild(buildUnitLi(kidUnit, maps, usedSpouses));
+    });
+    li.appendChild(ul);
+  }
+  return li;
+}
+
 /* ---------- Render ---------- */
 function renderTree() {
   var root = document.getElementById("treeRoot");
@@ -290,40 +417,19 @@ function renderTree() {
   if (!ids.length) { empty.hidden = false; return; }
   empty.hidden = true;
 
-  var calc = calcGens(), gens = calc.gens, spMap = calc.spouseOf;
-  var byGen = {};
-  ids.forEach(function (id) { var g = gens[id]; (byGen[g] = byGen[g] || []).push(id); });
-  var genNums = Object.keys(byGen).map(Number).sort(function (a, b) { return a - b; });
-  document.getElementById("statGens").textContent = genNums.length;
+  var calc = calcGens(), gens = calc.gens; // still used for the Generations stat
+  var maxGen = 0;
+  ids.forEach(function (id) { if (gens[id] > maxGen) maxGen = gens[id]; });
+  document.getElementById("statGens").textContent = maxGen + 1;
 
-  genNums.forEach(function (g, gi) {
-    var block = document.createElement("div"); block.className = "gen-block";
-    var lbl = document.createElement("div"); lbl.className = "gen-label";
-    lbl.innerHTML = '<span class="num">' + (g + 1) + '</span><span>Peedhi ' + (g + 1) + '</span>';
-    block.appendChild(lbl);
+  var maps = buildRelMaps();
+  var usedSpouses = {};
+  var roots = rootUnits(maps, ids);
+  roots.forEach(function (u) { u.forEach(function (id) { usedSpouses[id] = true; }); });
 
-    var row = document.createElement("div"); row.className = "gen-row";
-    spouseGroups(byGen[g], spMap).forEach(function (gr) {
-      if (gr.length === 2) {
-        var cg = document.createElement("div"); cg.className = "couple-group";
-        cg.appendChild(mkCard(gr[0]));
-        var mb = document.createElement("div"); mb.className = "marriage-bar";
-        cg.appendChild(mb); cg.appendChild(mkCard(gr[1]));
-        row.appendChild(cg);
-      } else {
-        row.appendChild(mkCard(gr[0]));
-      }
-    });
-    block.appendChild(row);
-    root.appendChild(block);
-
-    if (gi < genNums.length - 1) {
-      var conn = document.createElement("div"); conn.className = "connector";
-      root.appendChild(conn);
-      var orn = document.createElement("div"); orn.className = "gen-ornament"; orn.textContent = "\u2726";
-      root.appendChild(orn);
-    }
-  });
+  var wrap = document.createElement("ul"); wrap.className = "tree";
+  roots.forEach(function (u) { wrap.appendChild(buildUnitLi(u, maps, usedSpouses)); });
+  root.appendChild(wrap);
 
   renderPending();
 }
