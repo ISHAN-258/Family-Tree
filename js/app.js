@@ -202,16 +202,33 @@ function calcGens() {
       (siblingOf[r.to] = siblingOf[r.to] || []).push(r.fr);
     }
   });
-  // A "root" is someone with no recorded parent AND whose spouse (if any)
-  // also has no recorded parent. Someone who married into the family (no
-  // parent of their own, but a spouse who DOES have one) is NOT a root —
-  // they inherit their spouse's generation during the walk below instead
-  // of getting pinned to generation 0.
+  // A "root" is someone with no recorded parent, AND whose entire
+  // spouse/sibling "peer group" also has no recorded parent anywhere in
+  // it. Anyone connected (directly or through a chain of spouses/siblings)
+  // to someone who DOES have a recorded parent is deferred — they inherit
+  // their generation from that peer during the walk below instead of
+  // getting wrongly pinned to generation 0.
+  var peers = {};
+  function addPeer(a, b) { (peers[a] = peers[a] || []).push(b); (peers[b] = peers[b] || []).push(a); }
+  Object.keys(spouseOf).forEach(function (id) { addPeer(id, spouseOf[id]); });
+  Object.keys(siblingOf).forEach(function (id) { siblingOf[id].forEach(function (o) { addPeer(id, o); }); });
+
+  var compVisited = {}, componentHasParent = {};
+  ids.forEach(function (id) {
+    if (compVisited[id]) return;
+    var stack = [id], comp = [];
+    compVisited[id] = true;
+    while (stack.length) {
+      var cur = stack.pop(); comp.push(cur);
+      (peers[cur] || []).forEach(function (p) { if (!compVisited[p]) { compVisited[p] = true; stack.push(p); } });
+    }
+    var hasParent = comp.some(function (c) { return childOf[c] && childOf[c].length; });
+    comp.forEach(function (c) { componentHasParent[c] = hasParent; });
+  });
+
   var roots = ids.filter(function (id) {
     if (childOf[id] && childOf[id].length) return false;
-    var sp = spouseOf[id];
-    if (sp && childOf[sp] && childOf[sp].length) return false;
-    return true;
+    return !componentHasParent[id];
   });
   if (!roots.length) roots = [ids[0]];
 
@@ -230,12 +247,21 @@ function calcGens() {
       if (gens[ch] === undefined) { gens[ch] = g + 1; if (!visited[ch]) { visited[ch] = true; queue.push(ch); } }
     });
   }
-  // Safety net: anyone still unassigned inherits their spouse's generation.
-  ids.forEach(function (id) {
-    if (gens[id] === undefined && spouseOf[id] !== undefined && gens[spouseOf[id]] !== undefined) {
-      gens[id] = gens[spouseOf[id]];
-    }
-  });
+  // Safety net: anyone still unassigned inherits a peer's (spouse or
+  // sibling) generation, repeating until nothing more can be resolved.
+  var changed = true;
+  while (changed) {
+    changed = false;
+    ids.forEach(function (id) {
+      if (gens[id] !== undefined) return;
+      var sp = spouseOf[id];
+      if (sp !== undefined && gens[sp] !== undefined) { gens[id] = gens[sp]; changed = true; return; }
+      var sibs = siblingOf[id] || [];
+      for (var k = 0; k < sibs.length; k++) {
+        if (gens[sibs[k]] !== undefined) { gens[id] = gens[sibs[k]]; changed = true; return; }
+      }
+    });
+  }
   ids.forEach(function (id) { if (gens[id] === undefined) gens[id] = 0; });
   return { gens: gens, spouseOf: spouseOf };
 }
