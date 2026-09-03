@@ -107,6 +107,7 @@ body{-webkit-font-smoothing:antialiased}
 /* DETAIL OVERLAY */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;
   z-index:200;padding:16px}
+.overlay[hidden]{display:none}
 .member-card-detail{background:var(--surface);border:2px solid var(--border);border-radius:16px;padding:24px;
   max-width:360px;width:100%;position:relative;box-shadow:var(--shadow);max-height:85vh;overflow-y:auto}
 .detail-close{position:absolute;top:12px;right:12px;background:var(--surface2);border:1px solid var(--border);
