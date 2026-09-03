@@ -5,7 +5,7 @@
 // 1. Deploy apps-script/Code.gs as a Web App (see README) and paste the
 //    /exec URL here. This is both where the site reads data FROM and
 //    where the inline form POSTs new entries TO.
-var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTtxgCaAkLskkjY9_J7j3L62TYOPqgRhhHNMgM_NMfbTvRbGe6BqJAhqG8EzDmNVpw/exec";
+var APPS_SCRIPT_URL = "";
 
 // 2. The five starting members — the fixed chain everyone else attaches to.
 //    Fill NAME (leave blank to hide the name and show only the role) and an
