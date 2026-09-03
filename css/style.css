@@ -49,23 +49,42 @@ body{-webkit-font-smoothing:antialiased}
 .stat-chip{padding:6px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:.78rem;color:var(--text2)}
 .stat-chip b{color:var(--accent2)}
 
+.tree-legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:16px;font-size:.72rem;color:var(--text3)}
+.tree-legend span{display:flex;align-items:center;gap:6px}
+.lg-line{width:14px;height:2px;background:var(--border2);display:inline-block}
+.lg-bar{width:14px;height:2px;display:inline-block}
+.lg-bar.lg-spouse{background:var(--accent)}
+.lg-bar.lg-sibling{border-top:2px dashed var(--text3);height:0}
+
 /* TREE */
 .tree-wrap{background:var(--surface);border:2px solid var(--border);border-radius:16px;padding:24px 16px;
   box-shadow:var(--shadow);overflow-x:auto;margin-bottom:24px;position:relative}
 .tree-root{display:flex;flex-direction:column;align-items:center;gap:0;min-width:280px}
 
 .gen-block{width:100%;display:flex;flex-direction:column;align-items:center}
-.gen-label{display:flex;align-items:center;gap:8px;margin-bottom:14px;color:var(--accent2);
-  font-family:var(--fd);font-size:.85rem;letter-spacing:1px;text-transform:uppercase}
-.gen-label .num{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#1a0a00;
-  display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700}
 
-.gen-row{display:flex;flex-wrap:wrap;justify-content:center;gap:20px 16px;margin-bottom:10px;width:100%}
-.couple-group{display:flex;align-items:center;gap:0}
-.marriage-bar{width:18px;height:2px;background:var(--accent);flex-shrink:0}
+/* Branching family tree — real parent->child connector lines (classic
+   org-chart CSS pattern), spouse joined by a solid bar, floating siblings
+   (no shared parent recorded yet) joined by a dashed bar instead. */
+.tree,.tree ul,.tree li{list-style:none;margin:0;padding:0;position:relative}
+.tree{display:flex;justify-content:center;flex-wrap:wrap;padding-top:4px;min-width:max-content}
+.tree ul{display:flex;padding-top:30px;position:relative}
+.tree ul::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:2px;height:30px;background:var(--border2)}
+.tree li{display:flex;flex-direction:column;align-items:center;padding:0 12px;position:relative}
+.tree li::before,.tree li::after{content:'';position:absolute;top:0;width:50%;height:30px;border-top:2px solid var(--border2)}
+.tree li::before{right:50%}
+.tree li::after{left:50%;border-left:2px solid var(--border2)}
+.tree li:only-child::before,.tree li:only-child::after{display:none}
+.tree li:only-child{padding-top:0}
+.tree li:first-child::before{border-top:none}
+.tree li:last-child::after{border-top:none;border-left:none}
+.tree>li::before,.tree>li::after{display:none}
 
-.connector{width:2px;height:26px;background:repeating-linear-gradient(to bottom,var(--accent) 0 4px,transparent 4px 8px);margin-bottom:6px}
-.gen-ornament{color:var(--accent2);font-size:.75rem;letter-spacing:6px;margin:6px 0 18px;opacity:.6}
+.unit-row{display:flex;align-items:center;gap:0}
+.conn-bar{flex-shrink:0;align-self:center}
+.conn-bar.conn-spouse{width:16px;height:2px;background:var(--accent)}
+.conn-bar.conn-sibling{width:16px;height:0;border-top:2px dashed var(--text3)}
 
 .member-card{width:var(--card-w);background:var(--surface2);border:1px solid var(--border);border-radius:14px;
   padding:14px 10px;text-align:center;cursor:pointer;transition:.2s;position:relative}
