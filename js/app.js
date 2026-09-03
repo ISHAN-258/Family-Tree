@@ -157,6 +157,10 @@ function buildData(submissions) {
   SEED_RELS.forEach(function (r) { S.rels.push(r); });
 
   submissions.forEach(function (sub) {
+    if (sub.name.trim().toLowerCase() === sub.relTo.trim().toLowerCase()) {
+      sub.reason = "can't be related to yourself — check the Related To name";
+      S.pending.push(sub); return;
+    }
     var relToId = findMemberByName(sub.relTo);
     if (!relToId) { sub.reason = 'name "' + sub.relTo + '" not found'; S.pending.push(sub); return; }
 
@@ -198,7 +202,17 @@ function calcGens() {
       (siblingOf[r.to] = siblingOf[r.to] || []).push(r.fr);
     }
   });
-  var roots = ids.filter(function (id) { return !childOf[id] || !childOf[id].length; });
+  // A "root" is someone with no recorded parent AND whose spouse (if any)
+  // also has no recorded parent. Someone who married into the family (no
+  // parent of their own, but a spouse who DOES have one) is NOT a root —
+  // they inherit their spouse's generation during the walk below instead
+  // of getting pinned to generation 0.
+  var roots = ids.filter(function (id) {
+    if (childOf[id] && childOf[id].length) return false;
+    var sp = spouseOf[id];
+    if (sp && childOf[sp] && childOf[sp].length) return false;
+    return true;
+  });
   if (!roots.length) roots = [ids[0]];
 
   var gens = {}, queue = [], visited = {};
@@ -216,6 +230,12 @@ function calcGens() {
       if (gens[ch] === undefined) { gens[ch] = g + 1; if (!visited[ch]) { visited[ch] = true; queue.push(ch); } }
     });
   }
+  // Safety net: anyone still unassigned inherits their spouse's generation.
+  ids.forEach(function (id) {
+    if (gens[id] === undefined && spouseOf[id] !== undefined && gens[spouseOf[id]] !== undefined) {
+      gens[id] = gens[spouseOf[id]];
+    }
+  });
   ids.forEach(function (id) { if (gens[id] === undefined) gens[id] = 0; });
   return { gens: gens, spouseOf: spouseOf };
 }
@@ -326,9 +346,10 @@ function openDetail(id) {
       return '<span class="rel-chip">' + escapeHtml(rm.name) + "</span>";
     }).join("");
   }
+  var avSrc = (m.img && /^https?:\/\//i.test(m.img)) ? escapeHtml(m.img) : DEFAULT_AVT;
   var inner = document.getElementById("detailInner");
   inner.innerHTML =
-    '<img class="dp-avatar" src="' + (m.img || DEFAULT_AVT) + '" onerror="this.src=\'' + DEFAULT_AVT + '\'" alt="">' +
+    '<img class="dp-avatar" src="' + avSrc + '" onerror="this.src=\'' + DEFAULT_AVT + '\'" alt="">' +
     '<div class="dp-name">' + escapeHtml(m.name) + "</div>" +
     (m.role ? '<div class="dp-role">' + escapeHtml(m.role) + "</div>" : "") +
     (m.dob ? '<div class="dp-bio">Janam: ' + escapeHtml(m.dob) + "</div>" : "") +
