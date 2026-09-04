@@ -584,6 +584,7 @@ function submitForm(e) {
       .then(function (data) {
         if (!data.ok) throw new Error(data.error || "failed");
         toast("Jud gaye! Tree mein dikhega thodi der mein.", "success");
+        if (data.photoWarning) toast("Photo save nahi hui: " + data.photoWarning, "error");
         f.reset();
         loadData();
       })
