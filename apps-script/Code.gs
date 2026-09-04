@@ -16,6 +16,7 @@
 
 var SHEET_NAME = "Sheet1"; // change if your tab is named differently
 var HEADERS = ["Timestamp", "Name", "RelationshipType", "RelatedTo", "DOB", "Marriage", "ImageLink", "Bio"];
+var PHOTO_FOLDER_NAME = "Parivar Vriksh Photos"; // uploaded photos are saved here in Drive
 
 function getSheet_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -56,6 +57,25 @@ function doGet(e) {
   return jsonOut_({ ok: true, rows: rows });
 }
 
+function getPhotoFolder_() {
+  var it = DriveApp.getFoldersByName(PHOTO_FOLDER_NAME);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(PHOTO_FOLDER_NAME);
+}
+
+// Decodes the browser-sent base64 photo, saves it in Drive, makes it
+// link-viewable, and returns a URL that works directly in an <img src>.
+function saveImage_(base64, mime, nameHint) {
+  if (!base64) return "";
+  try {
+    var blob = Utilities.newBlob(Utilities.base64Decode(base64), mime || "image/jpeg", (nameHint || "photo") + ".jpg");
+    var file = getPhotoFolder_().createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w500";
+  } catch (err) {
+    return ""; // upload failed — submission still goes through, just without a photo
+  }
+}
+
 // POST — appends one submission from the site's inline form.
 function doPost(e) {
   try {
@@ -63,6 +83,7 @@ function doPost(e) {
     if (!data.name || !data.relationshipType || !data.relatedTo) {
       return jsonOut_({ ok: false, error: "Name, Relationship Type, and Related To are required." });
     }
+    var imgUrl = saveImage_(data.imgBase64, data.imgMime, data.name);
     var sh = getSheet_();
     sh.appendRow([
       new Date(),
@@ -71,7 +92,7 @@ function doPost(e) {
       String(data.relatedTo).trim(),
       data.dob ? String(data.dob).trim() : "",
       data.marriage ? String(data.marriage).trim() : "",
-      data.img ? String(data.img).trim() : "",
+      imgUrl,
       data.bio ? String(data.bio).trim() : ""
     ]);
     return jsonOut_({ ok: true });
