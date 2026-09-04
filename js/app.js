@@ -525,43 +525,87 @@ function loadData() {
 }
 
 /* ---------- Submit the inline form ---------- */
+// Resize+compress the chosen photo in-browser (max 900px side, JPEG ~80%)
+// before sending, so a phone photo doesn't balloon the request.
+function fileToCompressedBase64(file, maxDim, quality) {
+  return new Promise(function (resolve, reject) {
+    var reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = function (e) {
+      var img = new Image();
+      img.onerror = reject;
+      img.onload = function () {
+        var w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w >= h) { h = Math.round(h * maxDim / w); w = maxDim; }
+          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        var canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL("image/jpeg", quality).split(",")[1]);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function submitForm(e) {
   e.preventDefault();
   if (!APPS_SCRIPT_URL) { toast("Pehle APPS_SCRIPT_URL set karo js/app.js mein", "error"); return; }
   var f = e.target;
-  var payload = {
+  var base = {
     name: f.fName.value.trim(),
     relationshipType: f.fType.value,
     relatedTo: f.fRelTo.value.trim(),
     dob: f.fDob.value,
     marriage: f.fMarriage.value,
-    img: f.fImg.value.trim(),
     bio: f.fBio.value.trim()
   };
-  if (!payload.name || !payload.relationshipType || !payload.relatedTo) {
+  if (!base.name || !base.relationshipType || !base.relatedTo) {
     toast("Naam, Relationship Type, aur Related To zaroori hain", "error");
     return;
   }
   var btn = document.getElementById("submitBtn");
-  btn.disabled = true; btn.textContent = "Jama ho raha hai\u2026";
-  fetch(APPS_SCRIPT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" }, // avoids CORS preflight on Apps Script
-    body: JSON.stringify(payload)
-  })
-    .then(function (res) { return res.json(); })
-    .then(function (data) {
-      if (!data.ok) throw new Error(data.error || "failed");
-      toast("Jud gaye! Tree mein dikhega thodi der mein.", "success");
-      f.reset();
-      loadData();
+  var file = f.fImg.files && f.fImg.files[0];
+
+  function send(imgBase64, imgMime) {
+    btn.disabled = true; btn.textContent = "Jama ho raha hai\u2026";
+    var payload = base;
+    payload.imgBase64 = imgBase64 || "";
+    payload.imgMime = imgMime || "";
+    fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" }, // avoids CORS preflight on Apps Script
+      body: JSON.stringify(payload)
     })
-    .catch(function () {
-      toast("Submit nahi ho paya. Apps Script URL/deployment check karo.", "error");
-    })
-    .finally(function () {
-      btn.disabled = false; btn.textContent = "Jama Karein";
-    });
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data.ok) throw new Error(data.error || "failed");
+        toast("Jud gaye! Tree mein dikhega thodi der mein.", "success");
+        f.reset();
+        loadData();
+      })
+      .catch(function () {
+        toast("Submit nahi ho paya. Apps Script URL/deployment check karo.", "error");
+      })
+      .finally(function () {
+        btn.disabled = false; btn.textContent = "Jama Karein";
+      });
+  }
+
+  if (file) {
+    btn.disabled = true; btn.textContent = "Photo taiyar ho raha hai\u2026";
+    fileToCompressedBase64(file, 900, 0.8)
+      .then(function (b64) { send(b64, "image/jpeg"); })
+      .catch(function () {
+        toast("Photo process nahi ho payi \u2014 bina photo ke jama kar rahe hain", "error");
+        send(null, null);
+      });
+  } else {
+    send(null, null);
+  }
 }
 
 /* ---------- Wire up ---------- */
